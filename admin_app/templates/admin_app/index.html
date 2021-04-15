@@ -1,24 +1,27 @@
+{% extends "admin_app/base_layout.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}
+    <title>Admin|EduOnline</title>
+{% endblock %}
         
-        <title>Admin|EduOnline</title>
-    </head>
-    
-    <body>
 
-        <div id="top">
-            <h1 id="heading">EduOnline</h1>
-        </div>
+    
+{% block body %}
+
+    <div id="top">
+        <h1 id="heading">EduOnline</h1>
+        <div>
             <ul>
-                <li><a href="default.asp">Subjects</a></li>
+                <li><a href="{% url 'admin_app:subjects' %}">Subjects</a></li>
                 <li><a href="news.asp">Exams</a></li>
                 <li><a href="contact.asp">Users</a></li>
             </ul>
         <div>
-            
-        </div>
-    </body>
-</html>
+        <a href="{% url 'user_auth:logout' %}">Logout</a>
+    </div>
+
+    {% block b1 %}
+    
+    {% endblock %}
+
+{% endblock %}

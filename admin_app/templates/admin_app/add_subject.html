@@ -1,0 +1,20 @@
+{% extends "admin_app/index.html" %}
+
+{% block title %}
+    <title>Add Subject|EduOnline</title>
+{% endblock %}
+
+{% block b1 %}
+<form action={% url 'admin_app:add_subject' %} method="POST">
+    {% csrf_token %}
+    <h2>Add Subject</h2>
+
+    <input type="text" name="subject_name" placeholder="Subject name">
+    <input type="submit" value="Add">
+    
+    {% if message %}
+        <div class="error">{{ message }}</div>
+    {% endif %}
+
+</form>
+{% endblock %}

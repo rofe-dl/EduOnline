@@ -2,12 +2,13 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 index_html_dir = "user_auth/index.html"
 
 def index(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("admin_app:index"))
+        return HttpResponseRedirect(reverse('admin_app:index'))
 
     if request.method == "POST":
         username = request.POST["username"]
@@ -26,4 +27,7 @@ def index(request):
     
     return render(request, index_html_dir)
 
-    
+@login_required(login_url='/')
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('user_auth:index'))
