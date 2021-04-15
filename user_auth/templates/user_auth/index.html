@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title>EduOnline</title>
+    </head>
+    
+    <body>
+
+        <div id="top">
+            <h1 id="heading">EduOnline</h1>
+        </div>
+
+        <div">
+            <div id="auth_box">
+                <form class="input_fields" action="{% url 'user_auth:index' %}" method="POST">
+                    {% csrf_token %}
+                    <h1>Log In</h1>
+                    {% if username %}
+                        <input type="text" name="username" value={{username}} placeholder="Username">
+                    {% else %}
+                        <input type="text" name="username" placeholder="Username">
+                    {% endif %}
+                    <input type="password" name="password" placeholder="Password">
+                    <br>
+                    {% if message %}
+                        <div class="auth_error">{{ message }}</div>
+                    {% endif %}
+                    <input class="auth_btn" type="submit" value="Login">
+                    
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
