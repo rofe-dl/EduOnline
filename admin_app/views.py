@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Subject
 # Create your views here.
+
+# URL locations here, to centralize
 index_url = 'admin_app/index.html'
 subjects_url = 'admin_app/subjects.html'
 add_subject_url = 'admin_app/add_subject.html'

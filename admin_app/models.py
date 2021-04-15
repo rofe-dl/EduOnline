@@ -8,3 +8,32 @@ class Subject(models.Model):
 
     def __str__(self):
         return self.subject_name
+
+class Exam(models.Model):
+    exam_id = models.CharField(max_length=255, primary_key=True)
+    exam_name = models.CharField(max_length=255)
+    duration = models.PositiveIntegerField()
+    total_marks = models.PositiveIntegerField(default=0)
+    standard = models.PositiveSmallIntegerField()
+    subject_name = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    admin = models.ForeignKey(User, on_delete=models.CASCADE)
+    available = models.BooleanField(default=True)
+
+class Question(models.Model):
+    question_id = models.CharField(max_length=255, primary_key=True)
+    exam_id = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    statement = models.CharField(max_length=1024)
+    solution_id = models.CharField(max_length=255)
+    mark = models.PositiveIntegerField()
+
+class Choice(models.Model):
+    choice_id = models.CharField(max_length=255, primary_key=True)
+    answer = models.CharField(max_length=255)
+    question_id = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+class Result(models.Model):
+    exam_id = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    marks_scored = models.IntegerField(default=0)
+
+    
