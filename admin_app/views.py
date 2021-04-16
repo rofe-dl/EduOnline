@@ -48,3 +48,14 @@ def delete_subject_view(request, subject_name):
     query.delete()
 
     return HttpResponseRedirect(reverse("admin_app:subjects"))
+
+@login_required(login_url='/')
+def exams_view(request):
+    pass
+
+@login_required(login_url='/')
+def add_exam_view(request):
+    if(request.method == "POST"):
+        pass
+
+    

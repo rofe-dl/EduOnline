@@ -1,13 +1,13 @@
 {% extends "admin_app/index.html" %}
 
 {% block title %}
-    <title>Subjects | EduOnline</title>
+    <title>Exams | EduOnline</title>
 {% endblock %}
 
 {% block b1 %}
 <div id="subjects">
-    <h2>Subjects</h2>
-    <a href="{% url 'admin_app:add_subject'%}">Add Subject</a>
+    <h2>Exams</h2>
+    <a href="{% url 'admin_app:add_subject'%}">Add Exam</a>
     <ul>
         {% for subject in subjects %}
             <li>
