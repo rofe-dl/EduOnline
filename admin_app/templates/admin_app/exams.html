@@ -5,17 +5,20 @@
 {% endblock %}
 
 {% block b1 %}
-<div id="subjects">
+<div id="exams">
     <h2>Exams</h2>
-    <a href="{% url 'admin_app:add_subject'%}">Add Exam</a>
+    <a href="{% url 'admin_app:add_exam'%}">Add Exam</a>
     <ul>
-        {% for subject in subjects %}
+        {% for exam in exams %}
             <li>
-                <div class="subject_details">
-                    {{ subject.subject_name }}
-                    {{ subject.avg_score }}
+                <div class="exam_details">
+                    {{ exam.exam_name }}
+                    {{ exam.standard }}
+                    {{ exam.duration }}
+                    {{ exam.subject_name }}
+                    {{ exam.total_marks }}
 
-                    <a href="{% url 'admin_app:delete_subject' subject.subject_name %}">Delete</a>
+                    <a href="{% url 'admin_app:delete_exam' exam.exam_id %}">Delete</a>
                 </div>
             </li>
 

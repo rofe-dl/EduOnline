@@ -1,0 +1,28 @@
+{% extends "admin_app/index.html" %}
+
+{% block title %}
+    <title>Add Exam | EduOnline</title>
+{% endblock %}
+
+{% block b1 %}
+<div id="exams">
+    <h2>Add Exam</h2>
+    <button id="addQuestion" type="button">Add Question</button>
+    <form method="post" action="">
+        <input type="text" id="numQuestions" name="num_of_questions" value="0" readonly>
+        <ol>
+
+        </ol>
+    </form>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    $("#addQuestion").click(function() {
+        let num = parseInt($("#numQuestions").val())
+        document.getElementById('numQuestions').value = num + 1;
+        var html = '';
+        html += '<'
+    })
+</script>
+{% endblock %}

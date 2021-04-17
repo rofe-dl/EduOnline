@@ -18,7 +18,12 @@ def index(request):
 
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse('admin_app:index'))
+
+            if(user.profile.is_admin):
+                return HttpResponseRedirect(reverse('admin_app:index'))
+            # else:
+            #     return HttpResponseRedirect(reverse('student_app:index'))
+
         else:
             return render(request, index_html_dir, {
                 "message" : "Username or Password is incorrect",

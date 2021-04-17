@@ -36,4 +36,3 @@ class Result(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     marks_scored = models.IntegerField(default=0)
 
-    
