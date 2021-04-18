@@ -1,0 +1,30 @@
+{% extends "admin_app/index.html" %}
+
+{% block title %}
+    <title>Edit Exam | EduOnline</title>
+{% endblock %}
+
+{% block b1 %}
+<div id="edit-exam-details-div">
+    <h2>Edit Exam</h2>
+    <form class="exam-details-form" method="POST" action="{% url 'admin_app:edit_exam_details' exam.exam_id %}">
+        {% csrf_token %}
+        <input type="text" name="exam_name" placeholder="Exam name" value={{ exam.exam_name }}>
+        <input type="number" name="duration" placeholder="Duration in mins" value={{ exam.duration }}>
+        <input type="number" name="standard" placeholder="Class" value={{ exam.standard }}>
+        
+        <select name="subject_name" value={{ exam.subject }}>
+            {% for subject in subjects %}
+                {% if subject == exam.subject %}
+                    <option selected value="{{subject}}">{{ subject }}</option>
+                {% else %}
+                    <option value="{{subject}}">{{ subject }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <input type="submit" value="Edit Paper">
+    </form>
+
+</div>
+
+{% endblock %}

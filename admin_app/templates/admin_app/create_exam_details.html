@@ -7,7 +7,7 @@
 {% block b1 %}
 <div id="create-exam-details-div">
     <h2>Create Exam</h2>
-    <form id="exam-details-form" method="POST" action="{% url 'admin_app:create_exam_details' %}">
+    <form class="exam-details-form" method="POST" action="{% url 'admin_app:create_exam_details' %}">
         {% csrf_token %}
         <input type="text" name="exam_name" placeholder="Exam name">
         <input type="number" name="duration" placeholder="Duration in mins">

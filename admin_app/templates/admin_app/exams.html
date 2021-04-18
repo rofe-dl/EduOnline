@@ -19,6 +19,7 @@
                     {{ exam.total_marks }}
 
                     <a href="{% url 'admin_app:delete_exam' exam.exam_id %}">Delete</a>
+                    <a href="{% url 'admin_app:edit_exam_details' exam.exam_id %}">Edit</a>
                 </div>
             </li>
 

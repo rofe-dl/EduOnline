@@ -16,10 +16,12 @@ add_subject_url = 'admin_app/add_subject.html'
 exams_url = 'admin_app/exams.html'
 create_exam_details_url = 'admin_app/create_exam_details.html'
 create_exam_questions_url = 'admin_app/create_exam_questions.html'
+edit_exam_details_url = 'admin_app/edit_exam_details.html'
 
 #TODO Prevent users from accessing administrator panel
 #TODO Grey out submit button for question if no changes made
 #TODO Update total marks of exam upon addition and deletion of question
+#TODO Download jquery
 
 @login_required(login_url=login_url)
 def index(request):
@@ -33,7 +35,7 @@ def subjects_view(request):
 
 @login_required(login_url=login_url)
 def add_subject_view(request):
-    if(request.method == "POST"):
+    if request.method == "POST":
         subject_name = request.POST["subject_name"]
 
         if Subject.objects.filter(subject_name=subject_name).exists():
@@ -63,7 +65,7 @@ def exams_view(request):
 
 @login_required(login_url=login_url)
 def create_exam_details_view(request):
-    if(request.method == "POST"):
+    if request.method == "POST":
         exam_id = "e-" + str(uuid.uuid4()) #generates unique id for each exam
         exam = Exam(
             exam_id=exam_id,
@@ -82,7 +84,7 @@ def create_exam_details_view(request):
 
 @login_required(login_url=login_url)
 def create_exam_questions_view(request, exam_id):
-    if(request.method == "POST"):
+    if request.method == "POST":
 
         question_id = "q-" + str(uuid.uuid4())
         question = Question(
@@ -123,7 +125,18 @@ def delete_exam_view(request, exam_id):
     query.delete()
 
     return HttpResponseRedirect(reverse("admin_app:exams"))
-    
-# @login_required(login_url=login_url)
-# def submit_question_view(request, exam_id):
 
+@login_required(login_url=login_url)
+def edit_exam_details_view(request, exam_id):
+    if request.method == "POST":
+        pass
+
+    exam = Exam.objects.get(exam_id=exam_id)
+    return render(request, edit_exam_details_url, {
+        "exam" : exam,
+        "subjects" : Subject.objects.all()
+    })
+
+@login_required(login_url=login_url)
+def edit_exam_questions_view(request, exam_id):
+    pass
