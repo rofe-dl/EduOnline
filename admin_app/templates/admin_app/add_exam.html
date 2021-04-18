@@ -7,22 +7,38 @@
 {% block b1 %}
 <div id="exams">
     <h2>Add Exam</h2>
-    <button id="addQuestion" type="button">Add Question</button>
-    <form method="post" action="">
-        <input type="text" id="numQuestions" name="num_of_questions" value="0" readonly>
-        <ol>
+    <button id="add_question_btn" type="button">Add Question</button>
+    <!-- <input type="text" id="numQuestions" name="num_of_questions" value="0" readonly> -->
 
-        </ol>
-    </form>
+    <div class="questions">
+
+    </div>
+
+    <template id="empty_question">
+        <form method="POST" action="">
+            {% csrf_token %}
+            <input type="text" class="question" placeholder="Enter question statement here">
+            <button class="add_option_btn" type="button">Add Option</button>
+            
+        </form>
+    </template>
+    
+
 </div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
-    $("#addQuestion").click(function() {
-        let num = parseInt($("#numQuestions").val())
-        document.getElementById('numQuestions').value = num + 1;
-        var html = '';
-        html += '<'
+    $("#add_question_btn").click(function() {
+        // let num = parseInt($("#numQuestions").val())
+        // document.getElementById('numQuestions').value = num + 1;
+
+        $(".questions").append($("#empty_question").html())
     })
+
+    $(document).on('click', '.add_option_btn', function(){
+        // alert("works")
+        $(this).closest("form").append('<input type="text" class="option" placeholder="Enter option here">');
+    })
+
 </script>
 {% endblock %}
