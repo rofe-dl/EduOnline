@@ -15,11 +15,11 @@ subjects_url = 'admin_app/subjects.html'
 add_subject_url = 'admin_app/add_subject.html'
 exams_url = 'admin_app/exams.html'
 create_exam_details_url = 'admin_app/create_exam_details.html'
-create_exam_question_url = 'admin_app/create_exam_questions.html'
+create_exam_questions_url = 'admin_app/create_exam_questions.html'
 
 #TODO Prevent users from accessing administrator panel
 #TODO Grey out submit button for question if no changes made
-#TODO Update total marks of exam
+#TODO Update total marks of exam upon addition and deletion of question
 
 @login_required(login_url=login_url)
 def index(request):
@@ -70,12 +70,11 @@ def create_exam_details_view(request):
             exam_name=request.POST["exam_name"],
             duration=request.POST["duration"],
             standard=request.POST["standard"],
-            subject_name=Subject.objects.get(subject_name=request.POST["subject_name"]),
+            subject=Subject.objects.get(subject_name=request.POST["subject_name"]),
             admin=User.objects.get(username=request.user.username))
         exam.save()
 
         return HttpResponseRedirect(reverse("admin_app:create_exam_questions", kwargs={"exam_id":exam_id}))
-
 
     return render(request, create_exam_details_url,{
         "subjects" : Subject.objects.all()
@@ -84,21 +83,39 @@ def create_exam_details_view(request):
 @login_required(login_url=login_url)
 def create_exam_questions_view(request, exam_id):
     if(request.method == "POST"):
-        solution = request.POST["solution"]
-        choices = request.POST.getlist('choice')
-
-        for choice in choices:
-            
 
         question_id = "q-" + str(uuid.uuid4())
         question = Question(
             question_id=question_id,
-            exam_id=exam_id,
+            exam=Exam.objects.get(exam_id=exam_id),
             statement=request.POST["statement"],
-            mark=int(request.POST["mark"]),
-            solution_id=solution_id
+            mark=int(request.POST["marks"])
         )
-    return render(request, create_exam_question_url)
+        question.save()
+        
+        solution = request.POST["solution"]
+        choices = request.POST.getlist('choice')
+
+        for choice in choices:
+            choice_id = "c-" + str(uuid.uuid4())
+            choice_model = Choice(
+                choice_id=choice_id,
+                answer=choice,
+                question=Question.objects.get(question_id=question_id)
+            )
+
+            choice_model.save()
+
+            if(choice == solution):
+                solution_id = choice_id
+
+
+        setattr(question, "solution_id", solution_id)
+        question.save()
+
+    return render(request, create_exam_questions_url,{
+        "exam_id" : exam_id
+    })
 
 @login_required(login_url=login_url)
 def delete_exam_view(request, exam_id):
