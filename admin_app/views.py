@@ -4,6 +4,8 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .models import *
+
+import uuid
 # Create your views here.
 
 # URL locations here, to centralize
@@ -12,7 +14,10 @@ index_url = 'admin_app/index.html'
 subjects_url = 'admin_app/subjects.html'
 add_subject_url = 'admin_app/add_subject.html'
 exams_url = 'admin_app/exams.html'
-add_exam_url = 'admin_app/add_exam.html'
+create_exam_details_url = 'admin_app/create_exam_details.html'
+create_exam_question_url = 'admin_app/create_exam_questions.html'
+
+#TODO Prevent users from accessing administrator panel
 
 @login_required(login_url=login_url)
 def index(request):
@@ -54,14 +59,33 @@ def delete_subject_view(request, subject_name):
 
 @login_required(login_url=login_url)
 def exams_view(request):
-    return render(request, exams_url)
+    return render(request, exams_url,{
+        "exams" : Exam.objects.filter(available=True)
+    })
 
 @login_required(login_url=login_url)
-def add_exam_view(request):
+def create_exam_details_view(request):
     if(request.method == "POST"):
-        pass
+        exam_id = "e-" + str(uuid.uuid4())
+        exam = Exam(
+            exam_id=exam_id,
+            exam_name=request.POST["exam_name"],
+            duration=request.POST["duration"],
+            standard=request.POST["standard"],
+            subject_name=Subject.objects.get(subject_name=request.POST["subject_name"]),
+            admin=User.objects.get(username=request.user.username))
+        exam.save()
 
-    return render(request, add_exam_url)
+        return HttpResponseRedirect(reverse("admin_app:create_exam_questions", kwargs={"exam_id":exam_id}))
+
+
+    return render(request, create_exam_details_url,{
+        "subjects" : Subject.objects.all()
+    })
+
+@login_required(login_url=login_url)
+def create_exam_questions_view(request, exam_id):
+    return render(request, create_exam_question_url)
 
 @login_required(login_url=login_url)
 def delete_exam_view(request, exam_id):

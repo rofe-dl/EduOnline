@@ -1,0 +1,26 @@
+{% extends "admin_app/index.html" %}
+
+{% block title %}
+    <title>Create Exam | EduOnline</title>
+{% endblock %}
+
+{% block b1 %}
+<div id="create_exam_details">
+    <h2>Create Exam</h2>
+    <form id="exam_details_form" method="POST" action="{% url 'admin_app:create_exam_details' %}">
+        {% csrf_token %}
+        <input type="text" name="exam_name" placeholder="Exam name">
+        <input type="number" name="duration" placeholder="Duration in mins">
+        <input type="number" name="standard" placeholder="Class">
+        
+        <select name="subject_name">
+            {% for subject in subjects %}
+                <option value="{{subject}}">{{ subject }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Create Paper">
+    </form>
+
+</div>
+
+{% endblock %}
