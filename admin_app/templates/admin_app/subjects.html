@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block b1 %}
-<div id="subjects">
+<div id="subjects-div">
     <h2>Subjects</h2>
     <a href="{% url 'admin_app:add_subject'%}">Add Subject</a>
     <ul>
         {% for subject in subjects %}
             <li>
-                <div class="subject_details">
+                <div class="subject-details-div">
                     {{ subject.subject_name }}
                     {{ subject.avg_score }}
 

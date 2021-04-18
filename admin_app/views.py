@@ -18,6 +18,8 @@ create_exam_details_url = 'admin_app/create_exam_details.html'
 create_exam_question_url = 'admin_app/create_exam_questions.html'
 
 #TODO Prevent users from accessing administrator panel
+#TODO Grey out submit button for question if no changes made
+#TODO Update total marks of exam
 
 @login_required(login_url=login_url)
 def index(request):
@@ -47,10 +49,6 @@ def add_subject_view(request):
     return render(request, add_subject_url)
 
 @login_required(login_url=login_url)
-def edit_subject_view(request):
-    pass
-
-@login_required(login_url=login_url)
 def delete_subject_view(request, subject_name):
     query = Subject.objects.filter(subject_name=subject_name)
     query.delete()
@@ -66,7 +64,7 @@ def exams_view(request):
 @login_required(login_url=login_url)
 def create_exam_details_view(request):
     if(request.method == "POST"):
-        exam_id = "e-" + str(uuid.uuid4())
+        exam_id = "e-" + str(uuid.uuid4()) #generates unique id for each exam
         exam = Exam(
             exam_id=exam_id,
             exam_name=request.POST["exam_name"],
@@ -85,6 +83,21 @@ def create_exam_details_view(request):
 
 @login_required(login_url=login_url)
 def create_exam_questions_view(request, exam_id):
+    if(request.method == "POST"):
+        solution = request.POST["solution"]
+        choices = request.POST.getlist('choice')
+
+        for choice in choices:
+            
+
+        question_id = "q-" + str(uuid.uuid4())
+        question = Question(
+            question_id=question_id,
+            exam_id=exam_id,
+            statement=request.POST["statement"],
+            mark=int(request.POST["mark"]),
+            solution_id=solution_id
+        )
     return render(request, create_exam_question_url)
 
 @login_required(login_url=login_url)
@@ -95,4 +108,5 @@ def delete_exam_view(request, exam_id):
     return HttpResponseRedirect(reverse("admin_app:exams"))
     
 # @login_required(login_url=login_url)
-# def 
+# def submit_question_view(request, exam_id):
+

@@ -5,28 +5,31 @@
 {% endblock %}
 
 {% block b1 %}
-<div id="create_exam_questions">
+<div id="create-exam-questions-div">
     <h2>Create Exam</h2>
 
-    <button id="add_question_btn" type="button">Add Question</button>
+    <button id="create-question-btn" type="button">Create Question</button>
 
-    <div class="questions">
+    <div class="questions-div">
     </div>
 
-    <template id="empty_question">
-        <form method="POST" action="">
+    <template id="empty-question">
+        <form method="POST" action="{% url 'admin_app:create_exam_questions' exam_id %}">
             {% csrf_token %}
-            <input type="text" class="question_statement" placeholder="Enter question statement here">
-            <input type="number" class="marks_allocated" placeholder="Marks allocated">
-            <button class="add_option_btn" type="button">Add Option</button>
-            <button class="remove_question_btn" type="button">Remove Question</button>
+            <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here">
+            <input type="number" class="marks-allocated" name="marks" placeholder="Marks allocated">
+            <button class="add-choice-btn" type="button">Add Choice</button>
+            <button class="remove-question-btn" type="button">Remove</button>
+            <button class="submit-question-btn" type="submit">Add To Paper</button>
+
+            <input type="text" name="solution" placeholder="Enter correct choice here">
         </form>
     </template>
 
-    <template id="empty_choice">
-        <div class="option">
-            <input type="checkbox" placeholder="Enter option here" name="">
-            <button class="remove_option_btn" type="button">Remove Option</button>
+    <template id="empty-choice">
+        <div class="choice-div">
+            <input type="text" placeholder="Enter choice here" name="choice">
+            <button class="remove-choice-btn" type="button">Remove</button>
         </div>
     </template>
     
@@ -35,22 +38,23 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
-    $("#add_question_btn").click(function() {
-        $(".questions").append($("#empty_question").html())
+    $("#create-question-btn").click(function() {
+        $(".questions-div").append($("#empty-question").html())
     })
 
-    $(document).on('click', '.add_option_btn', function(){ 
+    $(document).on('click', '.add-choice-btn', function(){ 
         //didn't use just .click as above because elements are dynamically generated and may not exist when script runs
-        $(this).closest("form").append($('#empty_choice').html());
+        $(this).closest("form").append($('#empty-choice').html());
     })
 
-    $(document).on('click', '.remove_option_btn', function(){
-        $(this).closest(".option").remove();
+    $(document).on('click', '.remove-choice-btn', function(){
+        $(this).closest(".choice-div").remove();
     })
 
-    $(document).on('click', '.remove_question_btn', function(){
+    $(document).on('click', '.remove-question-btn', function(){
         $(this).closest("form").remove();
     })
+
 
 </script>
 {% endblock %}
