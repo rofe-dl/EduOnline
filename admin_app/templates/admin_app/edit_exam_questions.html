@@ -1,16 +1,36 @@
 {% extends "admin_app/index.html" %}
 
 {% block title %}
-    <title>Create Exam | EduOnline</title>
+    <title>Edit Exam | EduOnline</title>
 {% endblock %}
 
 {% block b1 %}
-<div id="create-exam-questions-div">
-    <h2>Create Exam</h2>
+<div id="edit-exam-questions-div">
+    <h2>Edit Exam</h2>
 
     <button id="create-question-btn" type="button">Create Question</button>
 
     <div class="questions-div">
+        {% for question in questions %}
+            <form method="POST" action="{% url 'admin_app:confirm_edit_exam_questions' exam_id question.id %}">
+                {% csrf_token %}
+                <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here" value={{ question.statement }}>
+                <input type="number" class="marks-allocated" name="mark" placeholder="Marks allocated" value={{ question.mark }}>
+                <button class="add-choice-btn" type="button">Add Choice</button>
+                <button class="remove-question-btn" type="button">Remove Question</button>
+
+                <input type="text" name="solution" placeholder="Enter correct choice here" value={{ question.solution }}>
+
+                <button class="submit-question-btn" type="submit" value={{ question.solution }}>Confirm Edits</button>
+
+                {% for choice in question.choices %}
+                    <div class="choice-div">
+                        <input type="text" placeholder="Enter choice here" name="choice" value={{ choice }}>
+                        <button class="remove-choice-btn" type="button">Remove</button>
+                    </div>
+                {% endfor %}
+            </form>
+        {% endfor %}
     </div>
 
     <template id="empty-question">
@@ -62,10 +82,13 @@
         var posting = $.post(questionForm.attr('action'), questionForm.serialize());
 
         posting.done(function(){
-            questionForm.find(".submit-question-btn").prop('disabled', true);
-            questionForm.find(".remove-question-btn").prop('disabled', true);
+            questionForm.find(".submit-question-btn").prop('value', "Confirm Edits");
+            questionForm.attr("action", "{% url 'admin_app:edit_exam_questions' exam_id %}")
+        })
+
+        posting.fail(function(){
+            alert("Operation Failed!");
         })
     })
-
 </script>
 {% endblock %}

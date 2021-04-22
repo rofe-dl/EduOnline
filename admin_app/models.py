@@ -29,10 +29,16 @@ class Question(models.Model):
     solution_id = models.CharField(max_length=255) #storing solution_id and not solution because solution not defined yet
     mark = models.PositiveIntegerField()
 
+    def __str__(self):
+        return self.statement
+
 class Choice(models.Model):
     choice_id = models.CharField(max_length=255, primary_key=True)
     answer = models.CharField(max_length=255)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.answer
 
 class Result(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
