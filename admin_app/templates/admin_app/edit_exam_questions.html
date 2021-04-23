@@ -17,11 +17,11 @@
                 <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here" value="{{ question.statement }}">
                 <input type="number" class="marks-allocated" name="mark" placeholder="Marks allocated" value={{ question.mark }}>
                 <button class="add-choice-btn" type="button">Add Choice</button>
-                <button class="remove-question-btn" type="submit" name="remove_question">Remove Question</button>
+                <button class="remove-question-btn" type="submit">Remove Question</button>
 
                 <input type="text" name="solution" placeholder="Enter correct choice here" value="{{ question.solution }}">
 
-                <button class="submit-question-btn" type="submit" name="submit_question">Confirm Edit</button>
+                <button class="submit-question-btn" type="submit">Confirm Edit</button>
 
                 {% for choice in question.choices %}
                     <div class="choice-div">
