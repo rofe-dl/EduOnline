@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
@@ -22,13 +22,12 @@ edit_exam_questions_url = 'admin_app/edit_exam_questions.html'
 #TODO Grey out submit button for question if no changes made
 #TODO Update total marks of exam upon addition and deletion of question
 #TODO Download jquery
-#TODO Save and Edit paper buttons different
-#TODO prevent default when question added to paper
 #TODO trim input when taking making question
 #TODO separate js into js file for both edit and create questions
-#TODO edit screen submit button look for existing question, then delete it first
-#TODO edit screen remove button is a post request to delete
+#TODO edit screen: submit button look for existing question, then delete it first
+#TODO edit screen: remove button is a post request to delete
 #TODO tell to fill all fields or else form isn't submitted
+#TODO js logic to assert solution matches one choice
 
 @login_required(login_url=login_url)
 def index(request):
@@ -92,38 +91,8 @@ def create_exam_details_view(request):
 @login_required(login_url=login_url)
 def create_exam_questions_view(request, exam_id):
     if request.method == "POST":
-        
-        # creates question object with solution_id not set because it's not known
-        question_id = "q-" + str(uuid.uuid4())
-        question = Question(
-            question_id=question_id,
-            exam=Exam.objects.get(exam_id=exam_id),
-            statement=request.POST["statement"],
-            mark=int(request.POST["mark"])
-        )
-        question.save()
-        
-
-        # creates choice objects and set the solution id
-        solution = request.POST["solution"]
-        choices = request.POST.getlist('choice')
-
-        for choice in choices:
-            choice_id = "c-" + str(uuid.uuid4())
-            choice_model = Choice(
-                choice_id=choice_id,
-                answer=choice,
-                question=Question.objects.get(question_id=question_id)
-            )
-
-            choice_model.save()
-
-            if(choice == solution):
-                solution_id = choice_id
-
-        # adds the solution to the previous question object
-        question.solution_id = solution_id
-        question.save()
+        question = add_question(request, exam_id)
+        add_choices(request, question)
 
     return render(request, create_exam_questions_url,{
         "exam_id" : exam_id
@@ -138,9 +107,8 @@ def delete_exam_view(request, exam_id):
 
 @login_required(login_url=login_url)
 def edit_exam_details_view(request, exam_id):
-    if request.method == "POST":
 
-        
+    if request.method == "POST":
         exam = Exam.objects.get(exam_id=exam_id)
 
         exam.exam_name = request.POST["exam_name"]
@@ -165,37 +133,60 @@ def edit_exam_details_view(request, exam_id):
         "subjects" : Subject.objects.all()
     })
 
+def add_question(request, exam_id):
+    # creates question object with solution_id not set because it's not known
+    question_id = "q-" + str(uuid.uuid4())
+    question = Question(
+        question_id=question_id,
+        exam=Exam.objects.get(exam_id=exam_id),
+        statement=request.POST["statement"],
+        mark=int(request.POST["mark"])
+    )
+    question.save()
+
+    return question
+
+def add_choices(request, question):
+    # creates choice objects and set the solution id
+    solution = request.POST["solution"]
+    choices = request.POST.getlist('choice')
+    solution_id = ""
+    for choice in choices:
+        choice_id = "c-" + str(uuid.uuid4())
+        choice_model = Choice(
+            choice_id=choice_id,
+            answer=choice,
+            question=question
+        )
+
+        choice_model.save()
+
+        if(choice == solution):
+            solution_id = choice_id
+
+    # adds the solution to the previous question object
+    question.solution_id = solution_id
+    question.save()
+
 @login_required(login_url=login_url)
 def edit_exam_questions_view(request, exam_id, question_id=None):
     if request.method == "POST":
-
         question = Question.objects.get(question_id=question_id)
 
-        # deletes all existing choices of this question
-        Choice.objects.filter(question=question).delete()
+        if "submit_question" in request.POST:
 
-        question.statement = request.POST["statement"]
-        question.mark = request.POST["mark"]
-        question.save()
+            # deletes all existing choices of this question
+            Choice.objects.filter(question=question).delete()
 
-        solution = request.POST["solution"]
-        choices = request.POST.getlist('choice')
+            question.statement = request.POST["statement"]
+            question.mark = request.POST["mark"]
+            question.save()
 
-        for choice in choices:
-            choice_id = "c-" + str(uuid.uuid4())
-            choice_model = Choice(
-                choice_id=choice_id,
-                answer=choice,
-                question=Question.objects.get(question_id=question_id)
-            )
+            add_choices(request, question)
 
-            choice_model.save()
+        elif "remove_question" in request.POST:
 
-            if(choice == solution):
-                solution_id = choice_id
-
-        question.solution_id = solution_id
-        question.save()
+            question.delete()
 
     # finds list of questions belonging to the exam with this exam id
     questions = []

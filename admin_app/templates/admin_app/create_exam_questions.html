@@ -14,7 +14,7 @@
     </div>
 
     <template id="empty-question">
-        <form method="POST" action="{% url 'admin_app:create_exam_questions' exam_id %}">
+        <form class="empty-question-form" method="POST" action="{% url 'admin_app:create_exam_questions' exam_id %}">
             {% csrf_token %}
             <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here">
             <input type="number" class="marks-allocated" name="mark" placeholder="Marks allocated">
@@ -39,6 +39,18 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
+
+    $(document).on('submit', 'form', function(event){
+        event.preventDefault();
+        var questionForm = $(this);
+        var posting = $.post(questionForm.attr('action'), questionForm.serialize());
+
+        posting.done(function(){
+            questionForm.find(".submit-question-btn").prop('disabled', true);
+            questionForm.find(".remove-question-btn").prop('disabled', true);
+        })
+    })
+
     $("#create-question-btn").click(function() {
         $(".questions-div").append($("#empty-question").html())
     })
@@ -54,17 +66,6 @@
 
     $(document).on('click', '.remove-question-btn', function(){
         $(this).closest("form").remove();
-    })
-
-    $(document).on('submit', 'form', function(event){
-        event.preventDefault();
-        var questionForm = $(this);
-        var posting = $.post(questionForm.attr('action'), questionForm.serialize());
-
-        posting.done(function(){
-            questionForm.find(".submit-question-btn").prop('disabled', true);
-            questionForm.find(".remove-question-btn").prop('disabled', true);
-        })
     })
 
 </script>

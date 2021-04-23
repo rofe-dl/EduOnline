@@ -12,20 +12,20 @@
 
     <div class="questions-div">
         {% for question in questions %}
-            <form method="POST" action="{% url 'admin_app:confirm_edit_exam_questions' exam_id question.id %}">
+            <form class="filled-question-form" method="POST" action="{% url 'admin_app:confirm_edit_exam_questions' exam_id question.id %}">
                 {% csrf_token %}
-                <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here" value={{ question.statement }}>
+                <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here" value="{{ question.statement }}">
                 <input type="number" class="marks-allocated" name="mark" placeholder="Marks allocated" value={{ question.mark }}>
                 <button class="add-choice-btn" type="button">Add Choice</button>
-                <button class="remove-question-btn" type="button">Remove Question</button>
+                <button class="remove-question-btn" type="submit" name="remove_question">Remove Question</button>
 
-                <input type="text" name="solution" placeholder="Enter correct choice here" value={{ question.solution }}>
+                <input type="text" name="solution" placeholder="Enter correct choice here" value="{{ question.solution }}">
 
-                <button class="submit-question-btn" type="submit" value={{ question.solution }}>Confirm Edits</button>
+                <button class="submit-question-btn" type="submit" name="submit_question">Confirm Edit</button>
 
                 {% for choice in question.choices %}
                     <div class="choice-div">
-                        <input type="text" placeholder="Enter choice here" name="choice" value={{ choice }}>
+                        <input type="text" placeholder="Enter choice here" name="choice" value="{{ choice }}">
                         <button class="remove-choice-btn" type="button">Remove</button>
                     </div>
                 {% endfor %}
@@ -34,16 +34,16 @@
     </div>
 
     <template id="empty-question">
-        <form method="POST" action="{% url 'admin_app:create_exam_questions' exam_id %}">
+        <form class="empty-question-form" method="POST" action="{% url 'admin_app:create_exam_questions' exam_id %}">
             {% csrf_token %}
             <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here">
             <input type="number" class="marks-allocated" name="mark" placeholder="Marks allocated">
             <button class="add-choice-btn" type="button">Add Choice</button>
-            <button class="remove-question-btn" type="button">Remove Question</button>
+            <button class="remove-question-btn" type="button" name="remove_question">Remove Question</button>
 
             <input type="text" name="solution" placeholder="Enter correct choice here">
 
-            <button class="submit-question-btn" type="submit">Add To Paper</button>
+            <button class="submit-question-btn" type="submit" name="submit_question">Add To Paper</button>
         </form>
     </template>
 
@@ -59,6 +59,29 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
+    $(document).on('submit', '.empty-question-form', function(event){
+        event.preventDefault();
+        let questionForm = $(this);
+        let posting = $.post(questionForm.attr('action'), questionForm.serialize());
+        
+        posting.done(function(){
+            questionForm.find(".submit-question-btn").html("Refresh to edit");
+            questionForm.find(".submit-question-btn").prop('disabled', true);
+            questionForm.find(".remove-question-btn").prop('disabled', true);
+        })
+    })
+
+    $(document).on('submit', '.filled-question-form', function(event){
+        event.preventDefault();
+        let questionForm = $(this);
+        let posting = $.post(questionForm.attr('action'), questionForm.serialize());
+
+        posting.done(function(){
+            alert($("input[type=submit][clicked=true]").val());
+        })
+        
+    })
+
     $("#create-question-btn").click(function() {
         $(".questions-div").append($("#empty-question").html())
     })
@@ -76,19 +99,5 @@
         $(this).closest("form").remove();
     })
 
-    $(document).on('submit', 'form', function(event){
-        event.preventDefault();
-        var questionForm = $(this);
-        var posting = $.post(questionForm.attr('action'), questionForm.serialize());
-
-        posting.done(function(){
-            questionForm.find(".submit-question-btn").prop('value', "Confirm Edits");
-            questionForm.attr("action", "{% url 'admin_app:edit_exam_questions' exam_id %}")
-        })
-
-        posting.fail(function(){
-            alert("Operation Failed!");
-        })
-    })
 </script>
 {% endblock %}
