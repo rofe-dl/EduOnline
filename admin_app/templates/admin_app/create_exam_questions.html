@@ -40,7 +40,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
 
-    $(document).on('submit', 'form', function(event){
+    $(document).on('submit', '.empty-question-form', function(event){
         event.preventDefault();
         var questionForm = $(this);
         var posting = $.post(questionForm.attr('action'), questionForm.serialize());
@@ -64,7 +64,7 @@
         $(this).closest(".choice-div").remove();
     })
 
-    $(document).on('click', '.remove-question-btn', function(){
+    $(document).on('click', '.empty-question-form .remove-question-btn', function(){
         $(this).closest("form").remove();
     })
 

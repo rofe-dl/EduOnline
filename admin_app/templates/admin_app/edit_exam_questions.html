@@ -39,11 +39,11 @@
             <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here">
             <input type="number" class="marks-allocated" name="mark" placeholder="Marks allocated">
             <button class="add-choice-btn" type="button">Add Choice</button>
-            <button class="remove-question-btn" type="button" name="remove_question">Remove Question</button>
+            <button class="remove-question-btn" type="button">Remove Question</button>
 
             <input type="text" name="solution" placeholder="Enter correct choice here">
 
-            <button class="submit-question-btn" type="submit" name="submit_question">Add To Paper</button>
+            <button class="submit-question-btn" type="submit">Add To Paper</button>
         </form>
     </template>
 
@@ -59,6 +59,10 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
+
+    // .empty-question-form affects the newly added questions in the page
+    // I didn't find a way to input the question.id of the newly created question into the django templated action={ url } of empty form
+    // so you can't edit the question you just added in the same page, you have to refresh.
     $(document).on('submit', '.empty-question-form', function(event){
         event.preventDefault();
         let questionForm = $(this);
@@ -71,13 +75,36 @@
         })
     })
 
-    $(document).on('submit', '.filled-question-form', function(event){
+    // .filled-question-form has two submit buttons. both handled differently
+    // both functions below deal with the submit buttons of already existing questions
+    $(document).on('click', '.filled-question-form .submit-question-btn', function(event){
         event.preventDefault();
-        let questionForm = $(this);
-        let posting = $.post(questionForm.attr('action'), questionForm.serialize());
+        let questionForm = $(this).closest(".filled-question-form");
+
+        // to pass name of the button that was clicked to the action url
+        let dataArray = questionForm.serializeArray()
+        dataArray.push({
+            name: "submit_question",
+            value: ""
+        })
+
+        let posting = $.post(questionForm.attr('action'), jQuery.param(dataArray) );
+    })
+
+    $(document).on('click', '.filled-question-form .remove-question-btn', function(event){
+        event.preventDefault();
+        let questionForm = $(this).closest(".filled-question-form");
+
+        let dataArray = questionForm.serializeArray()
+        dataArray.push({
+            name: "remove_question",
+            value: ""
+        })
+
+        let posting = $.post(questionForm.attr('action'), jQuery.param(dataArray) );
 
         posting.done(function(){
-            alert($("input[type=submit][clicked=true]").val());
+            questionForm.remove();
         })
         
     })
@@ -95,7 +122,7 @@
         $(this).closest(".choice-div").remove();
     })
 
-    $(document).on('click', '.remove-question-btn', function(){
+    $(document).on('click', '.empty-question-form .remove-question-btn', function(){
         $(this).closest("form").remove();
     })
 
