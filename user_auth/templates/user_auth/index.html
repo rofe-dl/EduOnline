@@ -1,65 +1,61 @@
+{% extends "user_auth/base_layout.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}
+    <title>EduOnline</title>
+{% endblock %}
         
-        <title>EduOnline</title>
-    </head>
-    
-    <body>
 
-        <div class="top">
-            <h1 id="heading">EduOnline</h1>
+{% block body %}
+    <div class="top">
+        <h1 id="heading">EduOnline</h1>
+    </div>
+
+    <div class="mid">
+        <div id="login-box">
+            <form class="input-fields" action="{% url 'user_auth:index' %}" method="POST">
+                {% csrf_token %}
+                <h1>Log In</h1>
+                {% if login_username %}
+                    <input type="text" name="username" value={{login_username}} placeholder="Username">
+                {% else %}
+                    <input type="text" name="username" placeholder="Username">
+                {% endif %}
+                <input type="password" name="password" placeholder="Password">
+                <br>
+                {% if login_message %}
+                    <div class="auth_error">{{ login_message }}</div>
+                {% endif %}
+                <input type="submit" value="Login">
+                
+            </form>
         </div>
 
-        <div class="mid">
-            <div id="login-box">
-                <form class="input-fields" action="{% url 'user_auth:index' %}" method="POST">
-                    {% csrf_token %}
-                    <h1>Log In</h1>
-                    {% if login_username %}
-                        <input type="text" name="username" value={{login_username}} placeholder="Username">
-                    {% else %}
-                        <input type="text" name="username" placeholder="Username">
-                    {% endif %}
-                    <input type="password" name="password" placeholder="Password">
-                    <br>
-                    {% if login_message %}
-                        <div class="auth_error">{{ login_message }}</div>
-                    {% endif %}
-                    <input type="submit" value="Login">
-                    
-                </form>
-            </div>
+        <div id="register-box">
+            <form class="input-fields" action="{% url 'user_auth:register' %}" method="POST">
+                {% csrf_token %}
+                <h1>Register</h1>
 
-            <div id="register-box">
-                <form class="input-fields" action="{% url 'user_auth:register' %}" method="POST">
-                    {% csrf_token %}
-                    <h1>Register</h1>
+                {% if register_username %}
+                    <input type="text" name="username" value={{register_username}} placeholder="Username">
+                {% else %}
+                    <input type="text" name="username" placeholder="Username">
+                {% endif %}
 
-                    {% if register_username %}
-                        <input type="text" name="username" value={{register_username}} placeholder="Username">
-                    {% else %}
-                        <input type="text" name="username" placeholder="Username">
-                    {% endif %}
+                {% if register_email %}
+                    <input type="text" name="email" value={{register_email}} placeholder="Email">
+                {% else %}
+                    <input type="text" name="email" placeholder="Email">
+                {% endif %}
 
-                    {% if register_email %}
-                        <input type="text" name="email" value={{register_email}} placeholder="Email">
-                    {% else %}
-                        <input type="text" name="email" placeholder="Email">
-                    {% endif %}
-
-                    <input type="password" name="password" placeholder="Password">
-                    <input type="password" name="confirm_password" placeholder="Confirm Password">
-                    <br>
-                    
-                    {% if register_message %}
-                        <div class="auth_error">{{ register_message }}</div>
-                    {% endif %}
-                    <input type="submit" value="Register">
-                </form>
-            </div>
+                <input type="password" name="password" placeholder="Password">
+                <input type="password" name="confirm_password" placeholder="Confirm Password">
+                <br>
+                
+                {% if register_message %}
+                    <div class="auth_error">{{ register_message }}</div>
+                {% endif %}
+                <input type="submit" value="Register">
+            </form>
         </div>
-    </body>
-</html>
+    </div>
+{% endblock %}

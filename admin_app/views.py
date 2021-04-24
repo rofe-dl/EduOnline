@@ -29,17 +29,30 @@ edit_exam_questions_url = 'admin_app/edit_exam_questions.html'
 #TODO tell to fill all fields or else form isn't submitted
 #TODO js logic to assert solution matches one choice
 
+def redirect_if_user(function):
+    def _function(request, *args, **kwargs):
+        if not request.user.profile.is_admin:
+            return HttpResponseRedirect(reverse("user_app:index"))
+        
+        return function(request, *args, **kwargs)
+    
+    return _function
+
+
 @login_required(login_url=login_url)
+@redirect_if_user
 def index(request):
     return render(request, index_url)
 
 @login_required(login_url=login_url)
+@redirect_if_user
 def subjects_view(request):
     return render(request, subjects_url,{
         "subjects" : Subject.objects.all()
     })
 
 @login_required(login_url=login_url)
+@redirect_if_user
 def add_subject_view(request):
     if request.method == "POST":
         subject_name = request.POST["subject_name"]
@@ -57,6 +70,7 @@ def add_subject_view(request):
     return render(request, add_subject_url)
 
 @login_required(login_url=login_url)
+@redirect_if_user
 def delete_subject_view(request, subject_name):
     query = Subject.objects.filter(subject_name=subject_name)
     query.delete()
@@ -64,12 +78,14 @@ def delete_subject_view(request, subject_name):
     return HttpResponseRedirect(reverse("admin_app:subjects"))
 
 @login_required(login_url=login_url)
+@redirect_if_user
 def exams_view(request):
     return render(request, exams_url,{
         "exams" : Exam.objects.filter(available=True)
     })
 
 @login_required(login_url=login_url)
+@redirect_if_user
 def create_exam_details_view(request):
     if request.method == "POST":
         exam_id = "e-" + str(uuid.uuid4()) #generates unique id for each exam
@@ -89,6 +105,7 @@ def create_exam_details_view(request):
     })
 
 @login_required(login_url=login_url)
+@redirect_if_user
 def create_exam_questions_view(request, exam_id):
     if request.method == "POST":
         question = add_question(request, exam_id)
@@ -99,6 +116,7 @@ def create_exam_questions_view(request, exam_id):
     })
 
 @login_required(login_url=login_url)
+@redirect_if_user
 def delete_exam_view(request, exam_id):
     query = Exam.objects.filter(exam_id=exam_id)
     query.delete()
@@ -106,6 +124,7 @@ def delete_exam_view(request, exam_id):
     return HttpResponseRedirect(reverse("admin_app:exams"))
 
 @login_required(login_url=login_url)
+@redirect_if_user
 def edit_exam_details_view(request, exam_id):
 
     if request.method == "POST":
@@ -169,6 +188,7 @@ def add_choices(request, question):
     question.save()
 
 @login_required(login_url=login_url)
+@redirect_if_user
 def edit_exam_questions_view(request, exam_id, question_id=None):
     if request.method == "POST":
         question = Question.objects.get(question_id=question_id)
