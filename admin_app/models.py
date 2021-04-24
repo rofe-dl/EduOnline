@@ -40,7 +40,7 @@ class Choice(models.Model):
     def __str__(self):
         return self.answer
 
-class Result(models.Model):
+class ReportCard(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     marks_scored = models.IntegerField(default=0)

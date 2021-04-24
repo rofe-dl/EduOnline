@@ -1,0 +1,28 @@
+{% extends "user_app/index.html" %}
+
+{% block title %}
+    <title>Exams | EduOnline</title>
+{% endblock %}
+
+{% block b1 %}
+<div id="exams-div">
+    <h2>Exams</h2>
+
+    <ul>
+        {% for exam in exams %}
+            <li>
+                <div class="exam-details-div">
+                    {{ exam.exam_name }}
+                    {{ exam.standard }}
+                    {{ exam.duration }}
+                    {{ exam.subject_name }}
+                    {{ exam.total_marks }}
+
+                    <a href="{% url 'user_app:give_exam' exam.exam_id %}">Give Exam</a>
+                </div>
+            </li>
+
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
