@@ -1,57 +1,31 @@
 {% extends "user_app/index.html" %}
 
 {% block title %}
-    <title>Edit Exam | EduOnline</title>
+    <title>{{exam.exam_name}} | EduOnline</title>
 {% endblock %}
 
 {% block b1 %}
 <div id="give-exam-div">
-    <h2>Give Exam</h2>
+    <h2>{{exam.exam_name}}</h2>
+    <h4>Duration: {{exam.duration}} mins</h4>
 
     <div class="questions-div">
         {% for question in questions %}
-            <form class="filled-question-form" method="POST" action="{% url 'admin_app:confirm_edit_exam_questions' exam_id question.id %}">
+            <form class="question-form" method="POST" action="">
                 {% csrf_token %}
-                <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here" value="{{ question.statement }}">
-                <input type="number" class="marks-allocated" name="mark" placeholder="Marks allocated" value={{ question.mark }}>
-                <button class="add-choice-btn" type="button">Add Choice</button>
-                <button class="remove-question-btn" type="submit">Remove Question</button>
-
-                <input type="text" name="solution" placeholder="Enter correct choice here" value="{{ question.solution }}">
-
-                <button class="submit-question-btn" type="submit">Confirm Edit</button>
+                <h3>{{ forloop.counter }}. {{ question.statement }}</h3>
+                Marks : {{ question.mark }}
 
                 {% for choice in question.choices %}
                     <div class="choice-div">
-                        <input type="text" placeholder="Enter choice here" name="choice" value="{{ choice }}">
-                        <button class="remove-choice-btn" type="button">Remove</button>
+                        <input type="radio" name="choice" value="{{ choice }}"> {{ choice }}
                     </div>
                 {% endfor %}
+
+                <button class="submit-question-btn" type="submit">Submit</button>
             </form>
         {% endfor %}
     </div>
-
-    <template id="empty-question">
-        <form class="empty-question-form" method="POST" action="{% url 'admin_app:create_exam_questions' exam_id %}">
-            {% csrf_token %}
-            <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here">
-            <input type="number" class="marks-allocated" name="mark" placeholder="Marks allocated">
-            <button class="add-choice-btn" type="button">Add Choice</button>
-            <button class="remove-question-btn" type="button">Remove Question</button>
-
-            <input type="text" name="solution" placeholder="Enter correct choice here">
-
-            <button class="submit-question-btn" type="submit">Add To Paper</button>
-        </form>
-    </template>
-
-    <template id="empty-choice">
-        <div class="choice-div">
-            <input type="text" placeholder="Enter choice here" name="choice">
-            <button class="remove-choice-btn" type="button">Remove</button>
-        </div>
-    </template>
-    
 
 </div>
 

@@ -28,6 +28,7 @@ edit_exam_questions_url = 'admin_app/edit_exam_questions.html'
 #TODO tell to fill all fields or else form isn't submitted
 #TODO js logic to assert solution matches one choice
 #TODO add admin/user username to title
+#TODO make choosing correct answer a radio button
 
 def redirect_if_user(function):
     """ A decorator applied over every function so that if a student/user tried to access the url of an admin,

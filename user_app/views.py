@@ -62,3 +62,8 @@ def give_exam_view(request, exam_id):
         "questions" : questions,
         "exam" : exam
     })
+
+@login_required(login_url=login_url)
+@redirect_if_admin
+def submit_question(request, question_id):
+    pass
