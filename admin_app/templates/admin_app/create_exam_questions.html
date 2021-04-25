@@ -38,27 +38,38 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
+    
+    /**
+     * Sets the value of every radio option in the question form 
+     * to the value of the text field beside it. It then adds the checked 
+     * radio button value as a solution to the form data.
+     * 
+     * @param {Form} questionForm The question form it will act on
+     */
+    function setRadioValues(questionForm){
 
-    $(document).on('submit', '.empty-question-form', function(event){
-        event.preventDefault();
-        var questionForm = $(this);
-
-        // sets the value of every radio option to the value of the text field beside it
         questionForm.find('input[type=radio]').each(function(){
             let radio = $(this);
             radio.val(radio.closest("div").find("input[type=text]").val());
         })
 
         // finds the value of the checked radio 
-        var solution = questionForm.find('input[type=radio]:checked').val();
+        let solution = questionForm.find('input[type=radio]:checked').val();
         
         // adds the solution to the values passed
-        var dataArray = questionForm.serializeArray()
+        let dataArray = questionForm.serializeArray()
         dataArray.push({
             name : "solution",
             value : solution
         })
+    }
 
+    $(document).on('submit', '.empty-question-form', function(event){
+        event.preventDefault();
+        var questionForm = $(this);
+        setRadioValues(questionForm);
+        
+        let dataArray = questionForm.serializeArray()
         var posting = $.post(questionForm.attr('action'), jQuery.param(dataArray));
 
         posting.done(function(){
