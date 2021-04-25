@@ -19,16 +19,15 @@
             <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here">
             <input type="number" class="marks-allocated" name="mark" placeholder="Marks allocated">
             <button class="add-choice-btn" type="button">Add Choice</button>
+
             <button class="remove-question-btn" type="button">Remove Question</button>
-
-            <input type="text" name="solution" placeholder="Enter correct choice here">
-
             <button class="submit-question-btn" type="submit">Add To Paper</button>
         </form>
     </template>
 
     <template id="empty-choice">
         <div class="choice-div">
+            <input type="radio" name="solution">
             <input type="text" placeholder="Enter choice here" name="choice">
             <button class="remove-choice-btn" type="button">Remove</button>
         </div>
@@ -43,7 +42,24 @@
     $(document).on('submit', '.empty-question-form', function(event){
         event.preventDefault();
         var questionForm = $(this);
-        var posting = $.post(questionForm.attr('action'), questionForm.serialize());
+
+        // sets the value of every radio option to the value of the text field beside it
+        questionForm.find('input[type=radio]').each(function(){
+            let radio = $(this);
+            radio.val(radio.closest("div").find("input[type=text]").val());
+        })
+
+        // finds the value of the checked radio 
+        var solution = questionForm.find('input[type=radio]:checked').val();
+        
+        // adds the solution to the values passed
+        var dataArray = questionForm.serializeArray()
+        dataArray.push({
+            name : "solution",
+            value : solution
+        })
+
+        var posting = $.post(questionForm.attr('action'), jQuery.param(dataArray));
 
         posting.done(function(){
             questionForm.find(".submit-question-btn").prop('disabled', true);
@@ -64,6 +80,7 @@
         $(this).closest(".choice-div").remove();
     })
 
+    // only works on .empty-question-form, meaning the newly created questions
     $(document).on('click', '.empty-question-form .remove-question-btn', function(){
         $(this).closest("form").remove();
     })

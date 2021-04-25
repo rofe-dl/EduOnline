@@ -122,6 +122,7 @@
         $(this).closest(".choice-div").remove();
     })
 
+    // only works on .empty-question-form, meaning the newly created questions
     $(document).on('click', '.empty-question-form .remove-question-btn', function(){
         $(this).closest("form").remove();
     })
