@@ -19,16 +19,12 @@ create_exam_questions_url = 'admin_app/create_exam_questions.html'
 edit_exam_details_url = 'admin_app/edit_exam_details.html'
 edit_exam_questions_url = 'admin_app/edit_exam_questions.html'
 
-#TODO Prevent users from accessing administrator panel, vice versa
 #TODO Update total marks of exam upon addition and deletion of question
 #TODO Download jquery
 #TODO trim input when taking making question
 #TODO separate js into js file for both edit and create questions
-#TODO edit screen: submit button look for existing question, then delete it first
 #TODO tell to fill all fields or else form isn't submitted
-#TODO js logic to assert solution matches one choice
 #TODO add admin/user username to title
-#TODO make choosing correct answer a radio button
 
 def redirect_if_user(function):
     """ A decorator applied over every function so that if a student/user tried to access the url of an admin,

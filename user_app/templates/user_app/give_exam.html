@@ -11,7 +11,7 @@
 
     <div class="questions-div">
         {% for question in questions %}
-            <form class="question-form" method="POST" action="">
+            <form class="question-form" method="POST" action="{% url 'user_app:submit_question' exam.exam_id question.id %}">
                 {% csrf_token %}
                 <h3>{{ forloop.counter }}. {{ question.statement }}</h3>
                 Marks : {{ question.mark }}
