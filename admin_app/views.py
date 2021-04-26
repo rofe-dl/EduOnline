@@ -25,6 +25,7 @@ edit_exam_questions_url = 'admin_app/edit_exam_questions.html'
 #TODO separate js into js file for both edit and create questions
 #TODO tell to fill all fields or else form isn't submitted
 #TODO add admin/user username to title
+#TODO grey out question submit if a choice isn't selected in create,edit,give
 
 def redirect_if_user(function):
     """ A decorator applied over every function so that if a student/user tried to access the url of an admin,
@@ -107,8 +108,13 @@ def create_exam_details_view(request):
 @login_required(login_url=login_url)
 @redirect_if_user
 def create_exam_questions_view(request, exam_id):
+    exam = Exam.objects.get(exam_id=exam_id)
+
     if request.method == "POST":
-        question = add_question(request, exam_id)
+        question = add_question(request, exam)
+        exam.total_marks = exam.total_marks + int(question.mark)
+        exam.save()
+
         add_choices(request, question)
 
     return render(request, create_exam_questions_url,{
@@ -152,12 +158,12 @@ def edit_exam_details_view(request, exam_id):
         "subjects" : Subject.objects.all()
     })
 
-def add_question(request, exam_id):
+def add_question(request, exam):
     # creates question object with solution_id not set because it's not known
     question_id = "q-" + str(uuid.uuid4())
     question = Question(
         question_id=question_id,
-        exam=Exam.objects.get(exam_id=exam_id),
+        exam=exam,
         statement=request.POST["statement"],
         mark=int(request.POST["mark"])
     )
@@ -170,6 +176,7 @@ def add_choices(request, question):
     solution = request.POST["solution"]
     choices = request.POST.getlist('choice')
     solution_id = ""
+
     for choice in choices:
         choice_id = "c-" + str(uuid.uuid4())
         choice_model = Choice(
@@ -190,8 +197,11 @@ def add_choices(request, question):
 @login_required(login_url=login_url)
 @redirect_if_user
 def edit_exam_questions_view(request, exam_id, question_id=None):
+    exam = Exam.objects.get(exam_id=exam_id)
+
     if request.method == "POST":
         question = Question.objects.get(question_id=question_id)
+        exam.total_marks = exam.total_marks - int(question.mark)
 
         if "submit_question" in request.POST:
 
@@ -200,6 +210,8 @@ def edit_exam_questions_view(request, exam_id, question_id=None):
 
             question.statement = request.POST["statement"]
             question.mark = request.POST["mark"]
+            exam.total_marks = exam.total_marks + int(question.mark)
+
             question.save()
 
             add_choices(request, question)
@@ -208,9 +220,12 @@ def edit_exam_questions_view(request, exam_id, question_id=None):
 
             question.delete()
 
+        exam.save()
+
+
     # finds list of questions belonging to the exam with this exam id
     questions = []
-    for question in Question.objects.filter(exam=Exam.objects.get(exam_id=exam_id)):
+    for question in Question.objects.filter(exam=exam):
 
         choices = Choice.objects.filter(question=question)
         # adds a dictionary to the array that contains the question details

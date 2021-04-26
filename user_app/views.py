@@ -67,6 +67,7 @@ def give_exam_view(request, exam_id, question_id=None):
             # if user's answer is correct
             if request.POST["choice"] == solution.answer:
                 report_card.marks_scored = report_card.marks_scored + question.mark
+                report_card.save()
         
 
     # finds list of questions belonging to the exam with this exam id
