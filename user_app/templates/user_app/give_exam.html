@@ -14,15 +14,23 @@
             <form class="question-form" method="POST" action="{% url 'user_app:submit_question' exam.exam_id question.id %}">
                 {% csrf_token %}
                 <h3>{{ forloop.counter }}. {{ question.statement }}</h3>
-                Marks : {{ question.mark }}
+                Mark : {{ question.mark }}
 
                 {% for choice in question.choices %}
                     <div class="choice-div">
-                        <input type="radio" name="choice" value="{{ choice }}"> {{ choice }}
+                        {% if choice.choice_id == question.submitted_answer_id %}
+                            <input type="radio" name="choice" value="{{ choice.choice_id }}" checked> {{ choice }}
+                        {% else %}
+                            <input type="radio" name="choice" value="{{ choice.choice_id }}"> {{ choice }}
+                        {% endif %}
                     </div>
                 {% endfor %}
-
-                <button class="submit-question-btn" type="submit">Submit</button>
+                
+                {% if question.is_submitted %}
+                    <button class="submit-question-btn" type="submit" disabled >Submit</button>
+                {% else %}
+                    <button class="submit-question-btn" type="submit">Submit</button>
+                {% endif %}
             </form>
         {% endfor %}
     </div>

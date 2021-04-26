@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 from admin_app.models import *
+from user_app.models import *
 
 login_url = "/"
 
@@ -43,46 +44,61 @@ def exams_view(request):
 @login_required(login_url=login_url)
 @redirect_if_admin
 def give_exam_view(request, exam_id, question_id=None):
+    exam = Exam.objects.get(exam_id=exam_id)
+    user = User.objects.get(username=request.user.username)
+
+    report_card = ReportCard.objects.filter(exam=exam,user=user)
+    # if user has not given this exam, make a new report card for it
+    # if not report_card.exists():
+    #     report_card = ReportCard(exam=exam, user=user)
+    #     report_card.save()
+    # else:
+    #     return HttpResponseRedirect(reverse("user_app:exams"))
 
     # if user submits a question
     if request.method == "POST":
         question = Question.objects.get(question_id=question_id)
-        user = User.objects.get(username=request.user.username)
-        exam = Exam.objects.get(exam_id=exam_id)
-
-        report_card = ReportCard.objects.filter(exam=exam,user=user)
-
-        # if user has not given this exam, make a new report card for it
-        if not report_card.exists():
-            report_card = ReportCard(exam=exam, user=user)
-            report_card.save()
-
+        
         # if current user has not submitted this question before
-        if not SubmittedQuestion.objects.filter(user=user, question=question).exists():
-            submitted_question = SubmittedQuestion(user=user, question=question)
-            submitted_question.save()
+        if not SubmittedAnswer.objects.filter(user=user, question=question).exists():
+            submitted_answer = SubmittedAnswer(
+                user=user, 
+                question=question,
+                submitted_answer=Choice.objects.get(choice_id=request.POST["choice"])
+            )
+
+            submitted_answer.save()
 
             solution = Choice.objects.get(choice_id=question.solution_id)
 
             # if user's answer is correct
-            if request.POST["choice"] == solution.answer:
-                report_card.marks_scored = report_card.marks_scored + question.mark
-                report_card.save()
+            # if request.POST["choice"] == solution.choice_id:
+            #     report_card.marks_scored = report_card.marks_scored + question.mark
+            #     report_card.save()
         
+    submitted_answers = SubmittedAnswer.objects.filter(user=user)
 
     # finds list of questions belonging to the exam with this exam id
-    exam = Exam.objects.get(exam_id=exam_id)
     questions = []
     for question in Question.objects.filter(exam=exam):
+        try:
+            submitted_answer = submitted_answers.get(question=question)
+            is_submitted = True
+        except SubmittedAnswer.DoesNotExist:
+            submitted_answer = None
+            is_submitted = False
 
         choices = Choice.objects.filter(question=question)
+
         # adds a dictionary to the array that contains the question details
         questions.append({
             'statement' : question.statement,
             'mark' : question.mark,
             'choices' : choices,
             'solution' : Choice.objects.get(choice_id=question.solution_id),
-            'id' : question.question_id
+            'id' : question.question_id,
+            'is_submitted' : is_submitted,
+            'submitted_answer_id' : submitted_answer.submitted_answer.choice_id if is_submitted else None
         })
 
     return render(request, give_exam_url, {

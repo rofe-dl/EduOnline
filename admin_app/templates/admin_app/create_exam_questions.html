@@ -54,14 +54,14 @@
         })
 
         // finds the value of the checked radio 
-        let solution = questionForm.find('input[type=radio]:checked').val();
+        // let solution = questionForm.find('input[type=radio]:checked').val();
         
         // adds the solution to the values passed
-        let dataArray = questionForm.serializeArray()
-        dataArray.push({
-            name : "solution",
-            value : solution
-        })
+        // let dataArray = questionForm.serializeArray()
+        // dataArray.push({
+        //     name : "solution",
+        //     value : solution
+        // })
     }
 
     $(document).on('submit', '.empty-question-form', function(event){
@@ -75,6 +75,7 @@
         posting.done(function(){
             questionForm.find(".submit-question-btn").prop('disabled', true);
             questionForm.find(".remove-question-btn").prop('disabled', true);
+            questionForm.find(".add-choice-btn").prop('disabled', true);
         })
     })
 
