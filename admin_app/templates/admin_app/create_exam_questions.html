@@ -52,16 +52,6 @@
             let radio = $(this);
             radio.val(radio.closest("div").find("input[type=text]").val());
         })
-
-        // finds the value of the checked radio 
-        // let solution = questionForm.find('input[type=radio]:checked').val();
-        
-        // adds the solution to the values passed
-        // let dataArray = questionForm.serializeArray()
-        // dataArray.push({
-        //     name : "solution",
-        //     value : solution
-        // })
     }
 
     $(document).on('submit', '.empty-question-form', function(event){

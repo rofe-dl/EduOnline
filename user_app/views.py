@@ -49,11 +49,11 @@ def give_exam_view(request, exam_id, question_id=None):
 
     report_card = ReportCard.objects.filter(exam=exam,user=user)
     # if user has not given this exam, make a new report card for it
-    # if not report_card.exists():
-    #     report_card = ReportCard(exam=exam, user=user)
-    #     report_card.save()
-    # else:
-    #     return HttpResponseRedirect(reverse("user_app:exams"))
+    if not report_card.exists():
+        report_card = ReportCard(exam=exam, user=user)
+        report_card.save()
+    else:
+        return HttpResponseRedirect(reverse("user_app:exams"))
 
     # if user submits a question
     if request.method == "POST":
@@ -72,9 +72,9 @@ def give_exam_view(request, exam_id, question_id=None):
             solution = Choice.objects.get(choice_id=question.solution_id)
 
             # if user's answer is correct
-            # if request.POST["choice"] == solution.choice_id:
-            #     report_card.marks_scored = report_card.marks_scored + question.mark
-            #     report_card.save()
+            if request.POST["choice"] == solution.choice_id:
+                report_card.marks_scored = report_card.marks_scored + question.mark
+                report_card.save()
         
     submitted_answers = SubmittedAnswer.objects.filter(user=user)
 

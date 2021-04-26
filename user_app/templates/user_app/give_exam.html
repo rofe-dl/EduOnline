@@ -37,4 +37,17 @@
 
 </div>
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    $(document).on('submit', '.question-form', function(event){
+        event.preventDefault();
+        let questionForm = $(this);
+
+        let posting = $.post(questionForm.attr('action'), questionForm.serialize());
+        posting.done(function(){
+            questionForm.find(".submit-question-btn").prop('disabled', true);
+        })
+    })
+
+</script>
 {% endblock %}
