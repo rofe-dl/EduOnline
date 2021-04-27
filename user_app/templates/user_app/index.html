@@ -1,7 +1,7 @@
 {% extends "user_auth/base_layout.html" %}
 
 {% block title %}
-    <title>{{ page_title }} | EduOnline</title>
+    <title>Home - {{request.user.username}} | EduOnline</title>
 {% endblock %}
     
 {% block body %}
@@ -11,6 +11,7 @@
         <div>
             <ul>
                 <li><a href="{% url 'user_app:exams' %}">Exams</a></li>
+                <li><a href="{% url 'user_app:report_card' %}">Report Card</a></li>
             </ul>
         </div>
         <a href="{% url 'user_auth:logout' %}">Logout</a>

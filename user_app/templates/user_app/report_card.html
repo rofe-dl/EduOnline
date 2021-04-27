@@ -1,0 +1,52 @@
+{% extends "user_app/index.html" %}
+
+{% block title %}
+    <title>Report Card - {{request.user.username}} | EduOnline</title>
+{% endblock %}
+
+{% block b1 %}
+<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 15px;
+    }
+</style>
+
+<div id="report-card-div">
+    <table>
+        <tr>
+            <th>Subject</th>
+            <th>Average Marks Scored</th>
+            <th>Exam</th>
+            <th>Marks Scored</th>
+            <th>Total Marks</th>
+        </tr>
+        {% for subject, exams in report_card.items %}
+
+            <tr>
+                <td rowspan="{{ exams|length }}">{{ subject }}</td>
+                <td rowspan="{{ exams|length }}">{{ average_marks|get_item:subject }} %</td>
+                {% for exam in exams %}
+                    {% if forloop.first %}
+                        <td>{{ exam.exam_name }}</td>
+                        <td>{{ exam.marks_scored }}</td>
+                        <td>{{ exam.total_marks }}</td>
+                    {% else %}
+                        <tr>
+                            <td>{{ exam.exam_name }}</td>
+                            <td>{{ exam.marks_scored }}</td>
+                            <td>{{ exam.total_marks }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                
+            </tr>
+            
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
