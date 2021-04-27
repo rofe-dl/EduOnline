@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timezone import now
 
 from admin_app.models import *
 
@@ -16,4 +17,4 @@ class ReportCard(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     marks_scored = models.IntegerField(default=0)
-    is_ongoing = models.BooleanField(default=True)
+    time_started = models.DateTimeField(default=now)

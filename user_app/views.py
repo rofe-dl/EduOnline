@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.utils.timezone import now
 
 from admin_app.models import *
 from user_app.models import *
@@ -53,7 +54,12 @@ def give_exam_view(request, exam_id, question_id=None):
         report_card = ReportCard(exam=exam, user=user)
         report_card.save()
     else:
-        return HttpResponseRedirect(reverse("user_app:exams"))
+        report_card = ReportCard.objects.get(exam=exam,user=user)
+        time_difference = now() - report_card.time_started
+        print(time_difference.total_seconds())
+
+        if time_difference.total_seconds() >= exam.duration * 60:
+            return HttpResponseRedirect(reverse("user_app:exams"))
 
     # if user submits a question
     if request.method == "POST":
@@ -68,7 +74,6 @@ def give_exam_view(request, exam_id, question_id=None):
             )
 
             submitted_answer.save()
-
             solution = Choice.objects.get(choice_id=question.solution_id)
 
             # if user's answer is correct

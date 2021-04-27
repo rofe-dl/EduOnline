@@ -27,6 +27,7 @@ edit_exam_questions_url = 'admin_app/edit_exam_questions.html'
 #TODO add admin/user username to title
 #TODO grey out question submit if a choice isn't selected in create,edit,give
 #TODO give site wide messages
+#TODO add else to if request method isn't post so after operations are not performed
 
 def redirect_if_user(function):
     """ A decorator applied over every function so that if a student/user tried to access the url of an admin,
