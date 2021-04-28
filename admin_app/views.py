@@ -2,8 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 from .models import *
+
+from user_auth.models import Profile
+
+from user_app.views import get_user_report_card
 
 import uuid
 
@@ -18,12 +23,13 @@ create_exam_details_url = 'admin_app/create_exam_details.html'
 create_exam_questions_url = 'admin_app/create_exam_questions.html'
 edit_exam_details_url = 'admin_app/edit_exam_details.html'
 edit_exam_questions_url = 'admin_app/edit_exam_questions.html'
+users_url = 'admin_app/users.html'
+report_card_url = 'admin_app/report_card.html'
 
 #TODO Download jquery
 #TODO trim input when taking making question
 #TODO separate js into js file for both edit and create questions
 #TODO tell to fill all fields or else form isn't submitted
-#TODO add admin/user username to title
 #TODO grey out question submit if a choice isn't selected in create,edit,give
 #TODO give site wide messages
 #TODO add else to if request method isn't post so after operations are not performed
@@ -244,4 +250,22 @@ def edit_exam_questions_view(request, exam_id, question_id=None):
     return render(request, edit_exam_questions_url, {
         "questions" : questions,
         "exam_id" : exam_id
+    })
+
+@login_required(login_url=login_url)
+@redirect_if_user
+def report_card_view(request, username):
+    user = User.objects.get(username=username)
+    report_card, average_marks = get_user_report_card(user)
+
+    return render(request, report_card_url, {
+        "report_card" : report_card,
+        "average_marks" : average_marks
+    })
+
+@login_required(login_url=login_url)
+@redirect_if_user
+def users_view(request):
+    return render(request, users_url, {
+        "profiles" : Profile.objects.filter(is_admin=False)
     })

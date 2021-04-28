@@ -1,11 +1,9 @@
 {% extends "user_auth/base_layout.html" %}
 
 {% block title %}
-    <title>Admin | EduOnline</title>
+    <title>Admin - {{request.user.username}} | EduOnline</title>
 {% endblock %}
         
-
-    
 {% block body %}
 
     <div class="top-div">
@@ -14,7 +12,7 @@
             <ul>
                 <li><a href="{% url 'admin_app:subjects' %}">Subjects</a></li>
                 <li><a href="{% url 'admin_app:exams' %}">Exams</a></li>
-                <li><a href="">Users</a></li>
+                <li><a href="{% url 'admin_app:users' %}">Users</a></li>
             </ul>
         </div>
         <a href="{% url 'user_auth:logout' %}">Logout</a>
