@@ -36,6 +36,7 @@ report_card_url = 'admin_app/report_card.html'
 #TODO user can give an exam only once
 #TODO end exam if timer ends
 #TODO user cannot give two exams at once
+#TODO clean up repeat code using include of django templates
 
 def redirect_if_user(function):
     """ A decorator applied over every function so that if a student/user tried to access the url of an admin,
@@ -260,7 +261,8 @@ def report_card_view(request, username):
 
     return render(request, report_card_url, {
         "report_card" : report_card,
-        "average_marks" : average_marks
+        "average_marks" : average_marks,
+        "user" : user
     })
 
 @login_required(login_url=login_url)
