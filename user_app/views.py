@@ -48,18 +48,17 @@ def give_exam_view(request, exam_id, question_id=None):
     exam = Exam.objects.get(exam_id=exam_id)
     user = User.objects.get(username=request.user.username)
 
-    report_card = ReportCard.objects.filter(exam=exam,user=user)
-
-    # if user has not given this exam, make a new report card for it
-    if not report_card.exists():
+    # if user has not given this exam, make a new report card for it, else get the report card
+    try:
+        report_card = ReportCard.objects.get(exam=exam,user=user)
+    except ReportCard.DoesNotExist:
         report_card = ReportCard(exam=exam, user=user)
         report_card.save()
-    else:
-        report_card = ReportCard.objects.get(exam=exam,user=user)
-        time_difference = now() - report_card.time_started
 
-        if time_difference.total_seconds() >= exam.duration * 60:
-            return HttpResponseRedirect(reverse("user_app:exams"))
+    # checks if the user has enough time to still be giving the exam
+    time_difference = now() - report_card.time_started
+    if time_difference.total_seconds() >= exam.duration * 60:
+        return HttpResponseRedirect(reverse("user_app:exams"))
 
     # if user submits a question
     if request.method == "POST":
@@ -74,17 +73,18 @@ def give_exam_view(request, exam_id, question_id=None):
             )
 
             submitted_answer.save()
-            solution = Choice.objects.get(choice_id=question.solution_id)
 
             # if user's answer is correct
+            solution = Choice.objects.get(choice_id=question.solution_id)
             if request.POST["choice"] == solution.choice_id:
                 report_card.marks_scored = report_card.marks_scored + question.mark
                 report_card.save()
         
-    submitted_answers = SubmittedAnswer.objects.filter(user=user)
-
+    
     # finds list of questions belonging to the exam with this exam id
+    # and marks a question as submitted if user has given it before so it's greyed out
     questions = []
+    submitted_answers = SubmittedAnswer.objects.filter(user=user)
     for question in Question.objects.filter(exam=exam):
         try:
             submitted_answer = submitted_answers.get(question=question)
@@ -106,9 +106,14 @@ def give_exam_view(request, exam_id, question_id=None):
             'submitted_answer_id' : submitted_answer.submitted_answer.choice_id if is_submitted else None
         })
 
+    time_array = convert_time(int (exam.duration * 60 - time_difference.total_seconds()) )
+
     return render(request, give_exam_url, {
         "questions" : questions,
-        "exam" : exam
+        "exam" : exam,
+        "hours" : time_array[0],
+        "mins" : time_array[1],
+        "secs" : time_array[2]
     })
 
 @login_required(login_url=login_url)
@@ -162,3 +167,11 @@ def get_user_report_card(user):
 def get_item(dictionary, key):
     """ Method used in Django template to access a dictionary value by key """
     return dictionary.get(key)
+
+def convert_time(time):
+    secs = time % 60
+    mins = time // 60
+    hours = mins // 60
+    mins = mins % 60
+
+    return [hours, mins, secs]

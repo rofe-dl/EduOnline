@@ -7,7 +7,7 @@
 {% block b1 %}
 <div id="give-exam-div">
     <h2>{{exam.exam_name}}</h2>
-    <h4>Duration: {{exam.duration}} mins</h4>
+    <h4 id="countdown">{{ hours }}h : {{ mins }}m : {{ secs }}s</h4>
 
     <div class="questions-div">
         {% for question in questions %}
@@ -48,6 +48,25 @@
             questionForm.find(".submit-question-btn").prop('disabled', true);
         })
     })
+
+    var run = setInterval(function(){
+        // finds the duration of the exam and converts to seconds, reducing by 1
+        var timeArray = $("#countdown").html().split(" : "); 
+        var time = parseInt(timeArray[0]) * 3600 + parseInt(timeArray[1]) * 60 + parseInt(timeArray[2]) - 1;
+
+        var secs = time % 60;
+        var minutes = Math.floor(time / 60);
+        var hours = Math.floor(minutes / 60);
+        minutes = minutes % 60;
+
+        $("#countdown").html(hours + "h : " + minutes + "m : " + secs + "s");
+
+        if (time == 0){
+            clearInterval(run);
+            window.location.href = "{% url 'user_app:exams' %}"
+        }
+
+    }, 1000);
 
 </script>
 {% endblock %}

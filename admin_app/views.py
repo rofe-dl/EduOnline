@@ -19,7 +19,6 @@ create_exam_questions_url = 'admin_app/create_exam_questions.html'
 edit_exam_details_url = 'admin_app/edit_exam_details.html'
 edit_exam_questions_url = 'admin_app/edit_exam_questions.html'
 
-#TODO Update total marks of exam upon addition and deletion of question
 #TODO Download jquery
 #TODO trim input when taking making question
 #TODO separate js into js file for both edit and create questions
@@ -28,6 +27,9 @@ edit_exam_questions_url = 'admin_app/edit_exam_questions.html'
 #TODO grey out question submit if a choice isn't selected in create,edit,give
 #TODO give site wide messages
 #TODO add else to if request method isn't post so after operations are not performed
+#TODO user can give an exam only once
+#TODO end exam if timer ends
+#TODO user cannot give two exams at once
 
 def redirect_if_user(function):
     """ A decorator applied over every function so that if a student/user tried to access the url of an admin,
