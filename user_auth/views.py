@@ -65,7 +65,6 @@ def register_view(request):
 
         return HttpResponseRedirect(reverse('user_app:index'))
 
-
 @login_required(login_url='/')
 def logout_view(request):
 
