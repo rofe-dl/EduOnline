@@ -4,6 +4,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
+from .forms import *
+
 from .models import *
 
 index_url = "user_auth/index.html"
@@ -31,39 +33,29 @@ def index(request):
                 "login_message" : "Username or Password is incorrect",
                 "login_username" : username
             })
-    
-    return render(request, index_url)
+    register_form = UserRegisterForm()
+
+    return render(request, index_url, {
+        'register_form' : register_form
+    })
 
 def register_view(request):
+    
     if request.method == "POST":
-        username = request.POST["username"]
-        email = request.POST["email"]
-        password = request.POST["password"]
-        confirm_password = request.POST["confirm_password"]
+        register_form = UserRegisterForm(request.POST)
 
-        if not password == confirm_password:
-            return render(request, index_url, {
-                "register_username" : username,
-                "register_email" : email,
-                "register_message" : "Passwords do not match"
-            })
+        if register_form.is_valid():
+            user = register_form.save()
+            profile = Profile(is_admin=False, user=user)
+            profile.save()
 
-        elif User.objects.filter(username=username).exists():
-            return render(request, index_url, {
-                "register_username" : username,
-                "register_email" : email,
-                "register_message" : "Username already exists"
-            })
+            login(request, user)
 
-        user = User.objects.create_user(username=username, password=password, email=email)
-        user.save()
+            return HttpResponseRedirect(reverse('user_app:index'))
 
-        profile = Profile(is_admin=False, user=user)
-        profile.save()
-        
-        login(request, user)
-
-        return HttpResponseRedirect(reverse('user_app:index'))
+    return render(request, index_url, {
+        'register_form' : register_form
+    })
 
 @login_required(login_url='/')
 def logout_view(request):

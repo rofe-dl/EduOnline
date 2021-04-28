@@ -1,5 +1,5 @@
 {% extends "user_auth/base_layout.html" %}
-
+{% load crispy_forms_tags %}
 {% block title %}
     <title>EduOnline</title>
 {% endblock %}
@@ -31,30 +31,15 @@
         </div>
 
         <div id="register-box">
-            <form class="input-fields" action="{% url 'user_auth:register' %}" method="POST">
+            <form action="{% url 'user_auth:register' %}" method="POST">
                 {% csrf_token %}
-                <h1>Register</h1>
-
-                {% if register_username %}
-                    <input type="text" name="username" value={{register_username}} placeholder="Username">
-                {% else %}
-                    <input type="text" name="username" placeholder="Username">
-                {% endif %}
-
-                {% if register_email %}
-                    <input type="text" name="email" value={{register_email}} placeholder="Email">
-                {% else %}
-                    <input type="text" name="email" placeholder="Email">
-                {% endif %}
-
-                <input type="password" name="password" placeholder="Password">
-                <input type="password" name="confirm_password" placeholder="Confirm Password">
-                <br>
-                
-                {% if register_message %}
-                    <div class="auth_error">{{ register_message }}</div>
-                {% endif %}
-                <input type="submit" value="Register">
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Register</legend>
+                    {{ register_form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Register</button>
+                </div>
             </form>
         </div>
     </div>
