@@ -152,17 +152,15 @@ def delete_exam_view(request, exam_id):
 @login_required(login_url=login_url)
 @redirect_if_user
 def edit_exam_details_view(request, exam_id):
+    exam = Exam.objects.get(exam_id=exam_id)
+    form = CreateExamDetailsForm(instance=exam)
 
     if request.method == "POST":
-        exam = Exam.objects.get(exam_id=exam_id)
+        form = CreateExamDetailsForm(request.POST, instance=exam)
 
-        exam.exam_name = request.POST["exam_name"]
-        exam.duration = request.POST["duration"]
-        exam.standard = request.POST["standard"]
-        exam.subject = Subject.objects.get(subject_name=request.POST["subject_name"])
-
-        exam.save()
-
+        if form.is_valid:
+            form.save()
+            
         # if just the details are edited
         if "save_details" in request.POST:
             return HttpResponseRedirect(reverse("admin_app:exams"))
@@ -170,12 +168,9 @@ def edit_exam_details_view(request, exam_id):
         elif "edit_questions" in request.POST:
             return HttpResponseRedirect(reverse("admin_app:edit_exam_questions", kwargs={"exam_id":exam_id}))
 
-
-
-    exam = Exam.objects.get(exam_id=exam_id)
     return render(request, edit_exam_details_url, {
-        "exam" : exam,
-        "subjects" : Subject.objects.all()
+        "form" : form,
+        "exam" : exam
     })
 
 def add_question(request, exam):
