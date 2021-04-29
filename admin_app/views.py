@@ -99,7 +99,7 @@ def delete_subject_view(request, subject_name):
 @redirect_if_user
 def exams_view(request):
     return render(request, exams_url,{
-        "exams" : Exam.objects.filter(available=True)
+        "exams" : Exam.objects.all()
     })
 
 @login_required(login_url=login_url)
