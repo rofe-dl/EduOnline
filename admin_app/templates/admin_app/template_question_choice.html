@@ -1,0 +1,19 @@
+<template id="empty-question">
+    <form class="empty-question-form" method="POST" action="{% url 'admin_app:create_exam_questions' exam_id %}">
+        {% csrf_token %}
+        <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here">
+        <input type="number" class="marks-allocated" name="mark" placeholder="Marks allocated">
+        <button class="add-choice-btn" type="button">Add Choice</button>
+
+        <button class="remove-question-btn" type="button">Remove Question</button>
+        <button class="submit-question-btn" type="submit">Add To Paper</button>
+    </form>
+</template>
+
+<template id="empty-choice">
+    <div class="choice-div">
+        <input type="radio" name="solution">
+        <input type="text" placeholder="Enter choice here" name="choice">
+        <button class="remove-choice-btn" type="button">Remove</button>
+    </div>
+</template>

@@ -16,6 +16,7 @@ from user_auth.forms import UserRegisterForm
 
 from .filters import ExamFilter
 
+# URL locations here, to centralize
 login_url = "/"
 
 index_url = "user_app/index.html"
@@ -136,6 +137,31 @@ def report_card_view(request):
         "average_marks" : average_marks
     })
 
+@login_required(login_url='/')
+def edit_profile_view(request):
+    register_form = UserRegisterForm(instance=request.user)
+    
+    if request.method == "POST":
+        register_form = UserRegisterForm(request.POST, instance=request.user)
+
+        if register_form.is_valid():
+            user = register_form.save()
+            update_session_auth_hash(request, user) # prevents logout by updating session
+
+            return HttpResponseRedirect(reverse("user_app:index"))
+        
+        
+    return render(request, edit_profile_url, {
+        "register_form" : register_form
+    })
+
+""" HELPER METHODS """
+
+@register.filter
+def get_item(dictionary, key):
+    """ Method used in Django template to access a dictionary value by key """
+    return dictionary.get(key)
+
 def get_user_report_card(user):
     # Dictionary to keep track of exams given under a certain subject
     # Key : Subject, Value : List of dictionaries, each dictionary being an exam
@@ -172,11 +198,6 @@ def get_user_report_card(user):
 
     return report_card, average_marks
 
-@register.filter
-def get_item(dictionary, key):
-    """ Method used in Django template to access a dictionary value by key """
-    return dictionary.get(key)
-
 def convert_time(time):
     secs = time % 60
     mins = time // 60
@@ -184,21 +205,3 @@ def convert_time(time):
     mins = mins % 60
 
     return [hours, mins, secs]
-
-@login_required(login_url='/')
-def edit_profile_view(request):
-    register_form = UserRegisterForm(instance=request.user)
-    
-    if request.method == "POST":
-        register_form = UserRegisterForm(request.POST, instance=request.user)
-
-        if register_form.is_valid():
-            user = register_form.save()
-            update_session_auth_hash(request, user) # prevents logout by updating session
-
-            return HttpResponseRedirect(reverse("user_app:index"))
-        
-        
-    return render(request, edit_profile_url, {
-        "register_form" : register_form
-    })

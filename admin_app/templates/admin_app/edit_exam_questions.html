@@ -24,9 +24,9 @@
                 {% for choice in question.choices %}
                     <div class="choice-div">
                         {% if choice == question.solution %}
-                            <input type="radio" name="solution" checked>
+                            <input type="radio" name="solution" checked required>
                         {% else %}
-                            <input type="radio" name="solution">
+                            <input type="radio" name="solution" required>
                         {% endif %}
                         <input type="text" placeholder="Enter choice here" name="choice" value="{{ choice }}">
                         <button class="remove-choice-btn" type="button">Remove</button>
@@ -36,27 +36,8 @@
         {% endfor %}
     </div>
 
-    <template id="empty-question">
-        <form class="empty-question-form" method="POST" action="{% url 'admin_app:create_exam_questions' exam_id %}">
-            {% csrf_token %}
-            <input type="text" class="question-statement" name="statement" placeholder="Enter question statement here">
-            <input type="number" class="marks-allocated" name="mark" placeholder="Marks allocated">
-            <button class="add-choice-btn" type="button">Add Choice</button>
-
-            <button class="remove-question-btn" type="button">Remove Question</button>
-            <button class="submit-question-btn" type="submit">Add To Paper</button>
-        </form>
-    </template>
-
-    <template id="empty-choice">
-        <div class="choice-div">
-            <input type="radio" name="solution">
-            <input type="text" placeholder="Enter choice here" name="choice">
-            <button class="remove-choice-btn" type="button">Remove</button>
-        </div>
-    </template>
+    {% include "admin_app/template_question_choice.html" %}
     
-
 </div>
 
 <script>
@@ -86,9 +67,9 @@
         let posting = $.post(questionForm.attr('action'), questionForm.serialize());
         
         posting.done(function(){
-            questionForm.find(".submit-question-btn").html("Refresh to edit");
             questionForm.find(".submit-question-btn").prop('disabled', true);
             questionForm.find(".remove-question-btn").prop('disabled', true);
+            questionForm.find(".add-choice-btn").prop('disabled', true);
         })
     })
 

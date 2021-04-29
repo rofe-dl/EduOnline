@@ -6,15 +6,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash
 
 from .models import *
-
 from .forms import CreateExamDetailsForm, CreateSubjectForm
 
 from user_auth.models import Profile
-
-from user_app.views import get_user_report_card
-
 from user_auth.forms import UserRegisterForm
 
+from user_app.views import get_user_report_card
 from user_app.filters import ExamFilter
 
 import uuid
@@ -47,6 +44,9 @@ edit_profile_url = 'admin_app/edit_profile.html'
 #TODO user cannot give two exams at once
 #TODO clean up repeat code using include of django templates
 #TODO division by 0 error if total marks 0
+#TODO button to force end exam
+#TODO user can't give one exam again
+#TODO give required over required fields for client side validation
 
 def redirect_if_user(function):
     """ A decorator applied over every function so that if a student/user tried to access the url of an admin,
@@ -137,25 +137,20 @@ def create_exam_details_view(request):
 def create_exam_questions_view(request, exam_id):
     exam = Exam.objects.get(exam_id=exam_id)
     
-
     if request.method == "POST":
         question = add_question(request, exam)
-        exam.total_marks = exam.total_marks + int(question.mark)
-        exam.save()
 
-        add_choices(request, question)
+        # if one of the fields is empty
+        if not question:
+            pass
+        else: 
+            exam.total_marks = exam.total_marks + int(question.mark)
+            exam.save()
+            add_choices(request, question)
 
     return render(request, create_exam_questions_url,{
         "exam_id" : exam_id
     })
-
-@login_required(login_url=login_url)
-@redirect_if_user
-def delete_exam_view(request, exam_id):
-    query = Exam.objects.filter(exam_id=exam_id)
-    query.delete()
-
-    return HttpResponseRedirect(reverse("admin_app:exams"))
 
 @login_required(login_url=login_url)
 @redirect_if_user
@@ -181,42 +176,6 @@ def edit_exam_details_view(request, exam_id):
         "exam" : exam
     })
 
-def add_question(request, exam):
-    # creates question object with solution_id not set because it's not known
-    question_id = "q-" + str(uuid.uuid4())
-    question = Question(
-        question_id=question_id,
-        exam=exam,
-        statement=request.POST["statement"],
-        mark=int(request.POST["mark"])
-    )
-    question.save()
-
-    return question
-
-def add_choices(request, question):
-    # creates choice objects and set the solution id
-    solution = request.POST["solution"]
-    choices = request.POST.getlist('choice')
-    solution_id = ""
-
-    for choice in choices:
-        choice_id = "c-" + str(uuid.uuid4())
-        choice_model = Choice(
-            choice_id=choice_id,
-            answer=choice,
-            question=question
-        )
-
-        choice_model.save()
-
-        if(choice == solution):
-            solution_id = choice_id
-
-    # adds the solution to the previous question object
-    question.solution_id = solution_id
-    question.save()
-
 @login_required(login_url=login_url)
 @redirect_if_user
 def edit_exam_questions_view(request, exam_id, question_id=None):
@@ -231,16 +190,20 @@ def edit_exam_questions_view(request, exam_id, question_id=None):
             # deletes all existing choices of this question
             Choice.objects.filter(question=question).delete()
 
-            question.statement = request.POST["statement"]
-            question.mark = request.POST["mark"]
+            if is_empty(request.POST["statement"]) or is_empty(request.POST["mark"]):
+                pass
+            else:
+                question.statement = request.POST["statement"]
+                question.mark = request.POST["mark"]
+
+                question.save()
+
+                add_choices(request, question)
+
+            # this should stay outside else as the mark is re-added back regardless
             exam.total_marks = exam.total_marks + int(question.mark)
 
-            question.save()
-
-            add_choices(request, question)
-
         elif "remove_question" in request.POST:
-
             question.delete()
 
         exam.save()
@@ -264,6 +227,14 @@ def edit_exam_questions_view(request, exam_id, question_id=None):
         "questions" : questions,
         "exam_id" : exam_id
     })
+
+@login_required(login_url=login_url)
+@redirect_if_user
+def delete_exam_view(request, exam_id):
+    query = Exam.objects.filter(exam_id=exam_id)
+    query.delete()
+
+    return HttpResponseRedirect(reverse("admin_app:exams"))
 
 @login_required(login_url=login_url)
 @redirect_if_user
@@ -301,3 +272,68 @@ def edit_profile_view(request):
     return render(request, edit_profile_url, {
         "register_form" : register_form
     })
+
+
+""" HELPER METHODS """
+
+def add_question(request, exam):
+    # creates question object with solution_id not set because it's not known
+    question_id = "q-" + str(uuid.uuid4())
+
+    # if question statement or mark is empty
+    if is_empty(request.POST["statement"]) or is_empty(request.POST["mark"]):
+        return False
+
+    question = Question(
+        question_id=question_id,
+        exam=exam,
+        statement=request.POST["statement"],
+        mark=int(request.POST["mark"])
+    )
+
+    question.save()
+
+    return question
+
+def add_choices(request, question):
+    
+    # handles if user doesn't select any choice as a solution
+    try:
+        solution = request.POST["solution"]
+    except KeyError:
+        question.delete()
+        return False
+
+    # creates choice objects and set the solution id when choice id match solution id
+    choices = request.POST.getlist('choice')
+    solution_id = ""
+
+    for choice in choices:
+
+        # if a choice box is empty
+        if is_empty(choice):
+            continue
+
+        choice_id = "c-" + str(uuid.uuid4())
+        choice_model = Choice(
+            choice_id=choice_id,
+            answer=choice,
+            question=question
+        )
+
+        choice_model.save()
+
+        if(choice == solution):
+            solution_id = choice_id
+
+    
+    if not solution_id:
+        # if chosen solution does not match any choice (e.g user chose en empty choice as solution)
+        question.delete()
+    else:
+        # adds the solution to the previous question object
+        question.solution_id = solution_id
+        question.save()
+
+def is_empty(string):
+    return not str(string.strip())
