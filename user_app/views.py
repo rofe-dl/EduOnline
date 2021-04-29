@@ -62,7 +62,7 @@ def give_exam_view(request, exam_id, question_id=None):
     
     # checks if user is currently giving another exam
     if ReportCard.objects.filter(user=user, is_ongoing=True).exclude(exam=exam).exists():
-        messages.info(request, "You are already giving another exam!")
+        messages.error(request, "You are already giving another exam!")
         return HttpResponseRedirect(reverse("user_app:exams"))
 
     # if user has not started this exam, make a new report card for it
@@ -75,7 +75,7 @@ def give_exam_view(request, exam_id, question_id=None):
 
     # checks if user has finished this exam before their time expired
     if not report_card.is_ongoing:
-        messages.info(request, "You have already given this exam")
+        messages.warning(request, "You have already given this exam")
         return HttpResponseRedirect(reverse("user_app:exams"))
 
 
@@ -193,7 +193,7 @@ def edit_profile_view(request):
         if register_form.is_valid():
             user = register_form.save()
             update_session_auth_hash(request, user) # prevents logout by updating session
-            messages.info(request, "Profile updated")
+            messages.success(request, "Profile updated")
             return HttpResponseRedirect(reverse("user_app:index"))
         
         

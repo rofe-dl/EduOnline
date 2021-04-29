@@ -17,7 +17,7 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-info m-2" role="alert" id="msg">
+                <div class="alert alert-{{ message.tags }} m-2" role="alert" id="msg">
                     {{ message }}
                 </div>
             {% endfor %}

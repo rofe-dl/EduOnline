@@ -80,7 +80,7 @@ def add_subject_view(request):
         if form.is_valid():
 
             form.save()
-            messages.info(request, "Subject added")
+            messages.success(request, "Subject added")
             return HttpResponseRedirect(reverse("admin_app:subjects"))
     
     return render(request, add_subject_url, {
@@ -93,7 +93,7 @@ def delete_subject_view(request, subject_name):
     query = Subject.objects.filter(subject_name=subject_name)
     query.delete()
 
-    messages.info(request, "Subject deleted")
+    messages.success(request, "Subject deleted")
     return HttpResponseRedirect(reverse("admin_app:subjects"))
 
 @login_required(login_url=login_url)
@@ -124,7 +124,7 @@ def create_exam_details_view(request):
             exam.admin = user
 
             exam.save()
-        messages.info(request, "Exam created")
+        messages.success(request, "Exam created")
         return HttpResponseRedirect(reverse("admin_app:create_exam_questions", kwargs={"exam_id":exam_id}))
 
     return render(request, create_exam_details_url,{
@@ -163,7 +163,7 @@ def edit_exam_details_view(request, exam_id):
         if form.is_valid:
             form.save()
 
-        messages.info(request, "Exam details edited")
+        messages.success(request, "Exam details edited")
         # if just the details are edited
         if "save_details" in request.POST:
             return HttpResponseRedirect(reverse("admin_app:exams"))
@@ -235,7 +235,7 @@ def delete_exam_view(request, exam_id):
     query = Exam.objects.filter(exam_id=exam_id)
     query.delete()
 
-    messages.info(request, "Exam deleted")
+    messages.success(request, "Exam deleted")
     return HttpResponseRedirect(reverse("admin_app:exams"))
 
 @login_required(login_url=login_url)
@@ -267,7 +267,7 @@ def edit_profile_view(request):
         if register_form.is_valid():
             user = register_form.save()
             update_session_auth_hash(request, user) # prevents logout by updating session
-            messages.info(request, "Profile updated")
+            messages.success(request, "Profile updated")
             return HttpResponseRedirect(reverse("admin_app:index"))
         
         

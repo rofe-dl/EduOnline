@@ -136,3 +136,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # The template pack that is used by crispy forms 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# To edit message tags as bootstrap recognizes 'danger' tag for alerts, not 'error'
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger'
+}
