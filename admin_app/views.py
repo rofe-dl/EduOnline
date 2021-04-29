@@ -47,6 +47,7 @@ edit_profile_url = 'admin_app/edit_profile.html'
 #TODO button to force end exam
 #TODO user can't give one exam again
 #TODO give required over required fields for client side validation
+#TODO ctrl+f 'pass' and implement incomplete features
 
 def redirect_if_user(function):
     """ A decorator applied over every function so that if a student/user tried to access the url of an admin,
