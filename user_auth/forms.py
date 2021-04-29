@@ -12,5 +12,6 @@ class UserRegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(UserRegisterForm, self).__init__(*args, **kwargs)
 
+        self.fields['password2'].label = "Confirm Password"
         for fieldname in ['username', 'password1', 'password2']:
             self.fields[fieldname].help_text = None

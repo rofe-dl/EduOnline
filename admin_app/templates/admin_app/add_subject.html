@@ -1,5 +1,5 @@
 {% extends "admin_app/index.html" %}
-
+{% load crispy_forms_tags %}
 {% block title %}
     <title>Add Subject - {{request.user.username}} | EduOnline</title>
 {% endblock %}
@@ -8,14 +8,15 @@
 <div id="add-subject-div">
     <form action={% url 'admin_app:add_subject' %} method="POST">
         {% csrf_token %}
-        <h2>Add Subject</h2>
-    
-        <input type="text" name="subject_name" placeholder="Subject name">
-        <input type="submit" value="Add">
-    
-        {% if message %}
-            <div class="error">{{ message }}</div>
-        {% endif %}
+
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Add Subject</legend>
+            {{ form|crispy }}
+        </fieldset>
+
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Add</button>
+        </div>
     
     </form>
 </div>

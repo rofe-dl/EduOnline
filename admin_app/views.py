@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 from .models import *
 
-from .forms import CreateExamDetailsForm
+from .forms import CreateExamDetailsForm, CreateSubjectForm
 
 from user_auth.models import Profile
 
@@ -69,20 +69,18 @@ def subjects_view(request):
 @login_required(login_url=login_url)
 @redirect_if_user
 def add_subject_view(request):
+    form = CreateSubjectForm()
     if request.method == "POST":
-        subject_name = request.POST["subject_name"]
+        form = CreateSubjectForm(request.POST)
 
-        if Subject.objects.filter(subject_name=subject_name).exists():
-            return render(request, add_subject_url,{
-                "message" : "Subject already exists!"
-            })
-        
-        subject = Subject(subject_name=subject_name)
-        subject.save()
+        if form.is_valid():
 
-        return HttpResponseRedirect(reverse("admin_app:subjects"))
+            form.save()
+            return HttpResponseRedirect(reverse("admin_app:subjects"))
     
-    return render(request, add_subject_url)
+    return render(request, add_subject_url, {
+        "form" : form
+    })
 
 @login_required(login_url=login_url)
 @redirect_if_user
@@ -108,7 +106,7 @@ def create_exam_details_view(request):
         form = CreateExamDetailsForm(request.POST)
 
         if form.is_valid():
-            exam = form.save(commit=False)
+            exam = form.save(commit=False) #commit false as it won't let us add without exam id
 
             exam_id = "e-" + str(uuid.uuid4()) #generates unique id for each exam
             user = User.objects.get(username=request.user.username)
@@ -160,7 +158,7 @@ def edit_exam_details_view(request, exam_id):
 
         if form.is_valid:
             form.save()
-            
+
         # if just the details are edited
         if "save_details" in request.POST:
             return HttpResponseRedirect(reverse("admin_app:exams"))
