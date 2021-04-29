@@ -26,7 +26,7 @@ report_card_url = "user_app/report_card.html"
 edit_profile_url = "user_app/edit_profile.html"
 
 def redirect_if_admin(function):
-    """ A decorator applied over every function so that if an admin to access the url of a user,
+    """ A decorator applied over every function so that if an admin trie to access the url of a user,
     they get redirected to admin """
 
     def _function(request, *args, **kwargs):
@@ -55,10 +55,16 @@ def exams_view(request):
 @login_required(login_url=login_url)
 @redirect_if_admin
 def give_exam_view(request, exam_id, question_id=None):
+
     exam = Exam.objects.get(exam_id=exam_id)
     user = User.objects.get(username=request.user.username)
+    
+    # checks if user is currently giving another exam
+    if ReportCard.objects.filter(user=user, is_ongoing=True).exclude(exam=exam).exists():
+        return HttpResponseRedirect(reverse("user_app:exams"))
 
-    # if user has not given this exam, make a new report card for it, else get the report card
+    # if user has not started this exam, make a new report card for it
+    # else get the existing report card
     try:
         report_card = ReportCard.objects.get(exam=exam,user=user)
     except ReportCard.DoesNotExist:
@@ -66,9 +72,17 @@ def give_exam_view(request, exam_id, question_id=None):
         report_card.save()
 
     # checks if the user has enough time to still be giving the exam
+    # by finding diff between time now and time started and comparing it against exam duration
     time_difference = now() - report_card.time_started
     if time_difference.total_seconds() >= exam.duration * 60:
+        report_card.is_ongoing = False
+        report_card.save()
         return HttpResponseRedirect(reverse("user_app:exams"))
+
+    # checks if user has finished this exam before their time expired
+    elif not report_card.is_ongoing:
+        return HttpResponseRedirect(reverse("user_app:exams"))
+    
 
     # if user submits a question
     if request.method == "POST":
@@ -76,10 +90,17 @@ def give_exam_view(request, exam_id, question_id=None):
         
         # if current user has not submitted this question before
         if not SubmittedAnswer.objects.filter(user=user, question=question).exists():
+
+            # if user manages to click submit without choosing an option, redirect them to exam page
+            try:
+                answer = Choice.objects.get(choice_id=request.POST["choice"])
+            except KeyError:
+                return HttpResponseRedirect(reverse("user_app:give_exam", kwargs={"exam_id" : exam.exam_id}))
+
             submitted_answer = SubmittedAnswer(
                 user=user, 
                 question=question,
-                submitted_answer=Choice.objects.get(choice_id=request.POST["choice"])
+                answer=answer
             )
 
             submitted_answer.save()
@@ -92,10 +113,12 @@ def give_exam_view(request, exam_id, question_id=None):
         
     
     # finds list of questions belonging to the exam with this exam id
-    # and marks a question as submitted if user has given it before so it's greyed out
+    # and find submitted answers by this user
     questions = []
     submitted_answers = SubmittedAnswer.objects.filter(user=user)
     for question in Question.objects.filter(exam=exam):
+
+        # marks a question as submitted if user has given it before so it's greyed out
         try:
             submitted_answer = submitted_answers.get(question=question)
             is_submitted = True
@@ -113,18 +136,35 @@ def give_exam_view(request, exam_id, question_id=None):
             'solution' : Choice.objects.get(choice_id=question.solution_id),
             'id' : question.question_id,
             'is_submitted' : is_submitted,
-            'submitted_answer_id' : submitted_answer.submitted_answer.choice_id if is_submitted else None
+            'submitted_answer_id' : submitted_answer.answer.choice_id if is_submitted else None
         })
 
-    time_array = convert_time(int (exam.duration * 60 - time_difference.total_seconds()) )
+    time_tuple = convert_time(int (exam.duration * 60 - time_difference.total_seconds()) )
 
     return render(request, give_exam_url, {
         "questions" : questions,
         "exam" : exam,
-        "hours" : time_array[0],
-        "mins" : time_array[1],
-        "secs" : time_array[2]
+        "hours" : time_tuple[0],
+        "mins" : time_tuple[1],
+        "secs" : time_tuple[2]
     })
+
+@login_required(login_url=login_url)
+@redirect_if_admin
+def end_exam_view(request, exam_id):
+    exam = Exam.objects.get(exam_id=exam_id)
+    user = User.objects.get(username=request.user.username)
+
+    if request.method == "POST":
+        try:
+            report_card = ReportCard.objects.get(exam=exam,user=user)
+        except ReportCard.DoesNotExist:
+            report_card = ReportCard(exam=exam, user=user)
+        
+        report_card.is_ongoing = False
+        report_card.save()
+        return HttpResponseRedirect(reverse("user_app:exams"))
+
 
 @login_required(login_url=login_url)
 @redirect_if_admin
@@ -172,7 +212,7 @@ def get_user_report_card(user):
     # Dictionary to keep track of total marks per subject
     total_marks = dict()
 
-    for rc in ReportCard.objects.filter(user=user):
+    for rc in ReportCard.objects.filter(user=user, is_ongoing=False):
         subject = rc.exam.subject
 
         if not subject in report_card:
@@ -199,9 +239,11 @@ def get_user_report_card(user):
     return report_card, average_marks
 
 def convert_time(time):
+    ''' Finds the time in hours, mins, secs given total seconds '''
+
     secs = time % 60
     mins = time // 60
     hours = mins // 60
     mins = mins % 60
 
-    return [hours, mins, secs]
+    return (hours, mins, secs)

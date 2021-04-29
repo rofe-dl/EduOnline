@@ -7,7 +7,8 @@
 {% block b1 %}
 <div id="give-exam-div">
     <h2>{{exam.exam_name}}</h2>
-    <h4 id="countdown">{{ hours }}h : {{ mins }}m : {{ secs }}s</h4>
+    <h5>Time Left</h2>
+    <h5 id="countdown">{{ hours }}h : {{ mins }}m : {{ secs }}s</h4>
 
     <div class="questions-div">
         {% for question in questions %}
@@ -33,6 +34,10 @@
                 {% endif %}
             </form>
         {% endfor %}
+        <form method="POST" action="{% url 'user_app:end_exam' exam.exam_id %}">
+            {% csrf_token %}
+            <button type="submit">End Exam</button>
+        </form>
     </div>
 
 </div>

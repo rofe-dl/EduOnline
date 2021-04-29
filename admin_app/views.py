@@ -39,15 +39,13 @@ edit_profile_url = 'admin_app/edit_profile.html'
 #TODO grey out question submit if a choice isn't selected in create,edit,give
 #TODO give site wide messages
 #TODO add else to if request method isn't post so after operations are not performed
-#TODO user can give an exam only once
-#TODO end exam if timer ends
-#TODO user cannot give two exams at once
 #TODO clean up repeat code using include of django templates
 #TODO division by 0 error if total marks 0
-#TODO button to force end exam
-#TODO user can't give one exam again
 #TODO give required over required fields for client side validation
 #TODO ctrl+f 'pass' and implement incomplete features
+#TODO show status if exam is available in table, and uploader
+#TODO make html resume exam, not give
+#TODO grey out submit if not selected
 
 def redirect_if_user(function):
     """ A decorator applied over every function so that if a student/user tried to access the url of an admin,

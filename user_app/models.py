@@ -8,7 +8,7 @@ from admin_app.models import *
 class SubmittedAnswer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    submitted_answer = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Choice, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.submitted_answer.answer
@@ -18,3 +18,4 @@ class ReportCard(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     marks_scored = models.IntegerField(default=0)
     time_started = models.DateTimeField(default=now)
+    is_ongoing = models.BooleanField(default=True)
