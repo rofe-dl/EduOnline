@@ -3,8 +3,9 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 
-from .forms import *
+from .forms import UserRegisterForm
 
 from .models import *
 
@@ -14,29 +15,26 @@ def index(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('admin_app:index'))
 
+    register_form = UserRegisterForm()
+    login_form = AuthenticationForm()
+
     if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
+        login_form = AuthenticationForm(data=request.POST)
 
-        user = authenticate(request, username=username, password=password)
+        if login_form.is_valid():
+            user = login_form.get_user()
 
-        if user is not None:
             login(request, user)
 
             if(user.profile.is_admin):
                 return HttpResponseRedirect(reverse('admin_app:index'))
             else:
                 return HttpResponseRedirect(reverse('user_app:index'))
-
-        else:
-            return render(request, index_url, {
-                "login_message" : "Username or Password is incorrect",
-                "login_username" : username
-            })
-    register_form = UserRegisterForm()
+    
 
     return render(request, index_url, {
-        'register_form' : register_form
+        'register_form' : register_form,
+        "login_form" : login_form
     })
 
 def register_view(request):
@@ -54,7 +52,8 @@ def register_view(request):
             return HttpResponseRedirect(reverse('user_app:index'))
 
     return render(request, index_url, {
-        'register_form' : register_form
+        'register_form' : register_form,
+        'login_form' : AuthenticationForm()
     })
 
 @login_required(login_url='/')

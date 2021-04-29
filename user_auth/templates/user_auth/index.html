@@ -12,21 +12,15 @@
 
     <div class="mid">
         <div id="login-box">
-            <form class="input-fields" action="{% url 'user_auth:index' %}" method="POST">
+            <form action="{% url 'user_auth:index' %}" method="POST">
                 {% csrf_token %}
-                <h1>Log In</h1>
-                {% if login_username %}
-                    <input type="text" name="username" value={{login_username}} placeholder="Username">
-                {% else %}
-                    <input type="text" name="username" placeholder="Username">
-                {% endif %}
-                <input type="password" name="password" placeholder="Password">
-                <br>
-                {% if login_message %}
-                    <div class="auth_error">{{ login_message }}</div>
-                {% endif %}
-                <input type="submit" value="Login">
-                
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Login</legend>
+                    {{ login_form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Log In</button>
+                </div>
             </form>
         </div>
 
