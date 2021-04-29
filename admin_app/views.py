@@ -39,6 +39,7 @@ report_card_url = 'admin_app/report_card.html'
 #TODO end exam if timer ends
 #TODO user cannot give two exams at once
 #TODO clean up repeat code using include of django templates
+#TODO division by 0 error if total marks 0
 
 def redirect_if_user(function):
     """ A decorator applied over every function so that if a student/user tried to access the url of an admin,

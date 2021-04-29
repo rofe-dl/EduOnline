@@ -7,7 +7,7 @@
 {% block b1 %}
 <div id="subjects-div">
     <h2>Subjects</h2>
-    <a href="{% url 'admin_app:add_subject'%}">Add Subject</a>
+    <a href="{% url 'admin_app:add_subject' %}">Add Subject</a>
     <ul>
         {% for subject in subjects %}
             <li>
