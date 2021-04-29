@@ -6,6 +6,9 @@ app_name = 'admin_app'
 
 urlpatterns = [
     path('', views.index, name='index'),
+
+    path('edit-profile', views.edit_profile_view, name="edit_profile"),
+
     path('subjects/', views.subjects_view, name='subjects'),
     path('delete-subject/<str:subject_name>', views.delete_subject_view, name='delete_subject'),
     path('add-subject/', views.add_subject_view, name='add_subject'),

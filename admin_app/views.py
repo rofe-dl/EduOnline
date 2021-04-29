@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth import update_session_auth_hash
 
 from .models import *
 
@@ -12,7 +13,10 @@ from user_auth.models import Profile
 
 from user_app.views import get_user_report_card
 
+from user_auth.forms import UserRegisterForm
+
 import uuid
+
 
 # URL locations here, to centralize
 login_url = '/'
@@ -27,6 +31,7 @@ edit_exam_details_url = 'admin_app/edit_exam_details.html'
 edit_exam_questions_url = 'admin_app/edit_exam_questions.html'
 users_url = 'admin_app/users.html'
 report_card_url = 'admin_app/report_card.html'
+edit_profile_url = 'admin_app/edit_profile.html'
 
 #TODO Download jquery
 #TODO trim input when taking making question
@@ -272,4 +277,22 @@ def report_card_view(request, username):
 def users_view(request):
     return render(request, users_url, {
         "profiles" : Profile.objects.filter(is_admin=False)
+    })
+
+@login_required(login_url='/')
+def edit_profile_view(request):
+    register_form = UserRegisterForm(instance=request.user)
+    
+    if request.method == "POST":
+        register_form = UserRegisterForm(request.POST, instance=request.user)
+
+        if register_form.is_valid():
+            user = register_form.save()
+            update_session_auth_hash(request, user) # prevents logout by updating session
+
+            return HttpResponseRedirect(reverse("admin_app:index"))
+        
+        
+    return render(request, edit_profile_url, {
+        "register_form" : register_form
     })

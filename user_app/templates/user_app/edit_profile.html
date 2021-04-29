@@ -1,0 +1,24 @@
+{% extends "user_app/index.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+    <title>Edit Profile - {{request.user.username}} | EduOnline</title>
+{% endblock %}
+
+{% block b1 %}
+<div id="edit-profile-div">
+    <form action={% url 'user_app:edit_profile' %} method="POST">
+        {% csrf_token %}
+
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Edit Profile</legend>
+            {{ register_form|crispy }}
+        </fieldset>
+
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Save</button>
+        </div>
+    
+    </form>
+</div>
+
+{% endblock %}

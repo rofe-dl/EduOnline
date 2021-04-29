@@ -6,9 +6,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.template.defaulttags import register
+from django.contrib.auth import update_session_auth_hash
 
 from admin_app.models import *
+
 from user_app.models import *
+
+from user_auth.forms import UserRegisterForm
 
 login_url = "/"
 
@@ -16,6 +20,7 @@ index_url = "user_app/index.html"
 exams_url = "user_app/exams.html"
 give_exam_url = "user_app/give_exam.html"
 report_card_url = "user_app/report_card.html"
+edit_profile_url = "user_app/edit_profile.html"
 
 def redirect_if_admin(function):
     """ A decorator applied over every function so that if an admin to access the url of a user,
@@ -175,3 +180,21 @@ def convert_time(time):
     mins = mins % 60
 
     return [hours, mins, secs]
+
+@login_required(login_url='/')
+def edit_profile_view(request):
+    register_form = UserRegisterForm(instance=request.user)
+    
+    if request.method == "POST":
+        register_form = UserRegisterForm(request.POST, instance=request.user)
+
+        if register_form.is_valid():
+            user = register_form.save()
+            update_session_auth_hash(request, user) # prevents logout by updating session
+
+            return HttpResponseRedirect(reverse("user_app:index"))
+        
+        
+    return render(request, edit_profile_url, {
+        "register_form" : register_form
+    })
