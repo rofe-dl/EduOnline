@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.template.defaulttags import register
 from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
 
 from admin_app.models import *
 
@@ -61,6 +62,7 @@ def give_exam_view(request, exam_id, question_id=None):
     
     # checks if user is currently giving another exam
     if ReportCard.objects.filter(user=user, is_ongoing=True).exclude(exam=exam).exists():
+        messages.info(request, "You are already giving another exam!")
         return HttpResponseRedirect(reverse("user_app:exams"))
 
     # if user has not started this exam, make a new report card for it
@@ -71,16 +73,19 @@ def give_exam_view(request, exam_id, question_id=None):
         report_card = ReportCard(exam=exam, user=user)
         report_card.save()
 
+    # checks if user has finished this exam before their time expired
+    if not report_card.is_ongoing:
+        messages.info(request, "You have already given this exam")
+        return HttpResponseRedirect(reverse("user_app:exams"))
+
+
     # checks if the user has enough time to still be giving the exam
     # by finding diff between time now and time started and comparing it against exam duration
     time_difference = now() - report_card.time_started
     if time_difference.total_seconds() >= exam.duration * 60:
         report_card.is_ongoing = False
         report_card.save()
-        return HttpResponseRedirect(reverse("user_app:exams"))
-
-    # checks if user has finished this exam before their time expired
-    elif not report_card.is_ongoing:
+        messages.info(request, "Your time is up!")
         return HttpResponseRedirect(reverse("user_app:exams"))
     
 
@@ -163,6 +168,7 @@ def end_exam_view(request, exam_id):
         
         report_card.is_ongoing = False
         report_card.save()
+        messages.info(request, "Exam ended")
         return HttpResponseRedirect(reverse("user_app:exams"))
 
 
@@ -187,7 +193,7 @@ def edit_profile_view(request):
         if register_form.is_valid():
             user = register_form.save()
             update_session_auth_hash(request, user) # prevents logout by updating session
-
+            messages.info(request, "Profile updated")
             return HttpResponseRedirect(reverse("user_app:index"))
         
         

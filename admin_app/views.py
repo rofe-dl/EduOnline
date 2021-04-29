@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
 
 from .models import *
 from .forms import CreateExamDetailsForm, CreateSubjectForm
@@ -35,14 +36,11 @@ edit_profile_url = 'admin_app/edit_profile.html'
 #TODO Download jquery
 #TODO trim input when taking making question
 #TODO separate js into js file for both edit and create questions
-#TODO tell to fill all fields or else form isn't submitted
 #TODO grey out question submit if a choice isn't selected in create,edit,give
 #TODO give site wide messages
 #TODO add else to if request method isn't post so after operations are not performed
 #TODO clean up repeat code using include of django templates
 #TODO division by 0 error if total marks 0
-#TODO give required over required fields for client side validation
-#TODO ctrl+f 'pass' and implement incomplete features
 #TODO show status if exam is available in table, and uploader
 #TODO make html resume exam, not give
 #TODO grey out submit if not selected
@@ -82,6 +80,7 @@ def add_subject_view(request):
         if form.is_valid():
 
             form.save()
+            messages.info(request, "Subject added")
             return HttpResponseRedirect(reverse("admin_app:subjects"))
     
     return render(request, add_subject_url, {
@@ -94,6 +93,7 @@ def delete_subject_view(request, subject_name):
     query = Subject.objects.filter(subject_name=subject_name)
     query.delete()
 
+    messages.info(request, "Subject deleted")
     return HttpResponseRedirect(reverse("admin_app:subjects"))
 
 @login_required(login_url=login_url)
@@ -124,7 +124,7 @@ def create_exam_details_view(request):
             exam.admin = user
 
             exam.save()
-
+        messages.info(request, "Exam created")
         return HttpResponseRedirect(reverse("admin_app:create_exam_questions", kwargs={"exam_id":exam_id}))
 
     return render(request, create_exam_details_url,{
@@ -163,6 +163,7 @@ def edit_exam_details_view(request, exam_id):
         if form.is_valid:
             form.save()
 
+        messages.info(request, "Exam details edited")
         # if just the details are edited
         if "save_details" in request.POST:
             return HttpResponseRedirect(reverse("admin_app:exams"))
@@ -189,6 +190,7 @@ def edit_exam_questions_view(request, exam_id, question_id=None):
             # deletes all existing choices of this question
             Choice.objects.filter(question=question).delete()
 
+            # if one of the fields are empty
             if is_empty(request.POST["statement"]) or is_empty(request.POST["mark"]):
                 pass
             else:
@@ -233,6 +235,7 @@ def delete_exam_view(request, exam_id):
     query = Exam.objects.filter(exam_id=exam_id)
     query.delete()
 
+    messages.info(request, "Exam deleted")
     return HttpResponseRedirect(reverse("admin_app:exams"))
 
 @login_required(login_url=login_url)
@@ -264,7 +267,7 @@ def edit_profile_view(request):
         if register_form.is_valid():
             user = register_form.save()
             update_session_auth_hash(request, user) # prevents logout by updating session
-
+            messages.info(request, "Profile updated")
             return HttpResponseRedirect(reverse("admin_app:index"))
         
         
