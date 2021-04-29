@@ -14,6 +14,8 @@ from user_app.models import *
 
 from user_auth.forms import UserRegisterForm
 
+from .filters import ExamFilter
+
 login_url = "/"
 
 index_url = "user_app/index.html"
@@ -42,9 +44,11 @@ def index(request):
 @login_required(login_url=login_url)
 @redirect_if_admin
 def exams_view(request):
+    exams = Exam.objects.filter(available=True)
+    exams_filter = ExamFilter(request.GET, queryset=exams)
 
     return render(request, exams_url,{
-        "exams" : Exam.objects.filter(available=True)
+        "exams" : exams_filter
     })
 
 @login_required(login_url=login_url)

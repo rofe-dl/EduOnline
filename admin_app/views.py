@@ -15,6 +15,8 @@ from user_app.views import get_user_report_card
 
 from user_auth.forms import UserRegisterForm
 
+from user_app.filters import ExamFilter
+
 import uuid
 
 
@@ -98,8 +100,11 @@ def delete_subject_view(request, subject_name):
 @login_required(login_url=login_url)
 @redirect_if_user
 def exams_view(request):
+    exams = Exam.objects.filter(available=True)
+    exams_filter = ExamFilter(request.GET, queryset=exams)
+
     return render(request, exams_url,{
-        "exams" : Exam.objects.all()
+        "exams" : exams_filter
     })
 
 @login_required(login_url=login_url)
