@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 
 from .models import *
 
+from .forms import CreateExamDetailsForm
+
 from user_auth.models import Profile
 
 from user_app.views import get_user_report_card
@@ -99,27 +101,33 @@ def exams_view(request):
 @login_required(login_url=login_url)
 @redirect_if_user
 def create_exam_details_view(request):
+    form = CreateExamDetailsForm()
+
     if request.method == "POST":
-        exam_id = "e-" + str(uuid.uuid4()) #generates unique id for each exam
-        exam = Exam(
-            exam_id=exam_id,
-            exam_name=request.POST["exam_name"],
-            duration=request.POST["duration"],
-            standard=request.POST["standard"],
-            subject=Subject.objects.get(subject_name=request.POST["subject_name"]),
-            admin=User.objects.get(username=request.user.username))
-        exam.save()
+        form = CreateExamDetailsForm(request.POST)
+
+        if form.is_valid():
+            exam = form.save(commit=False)
+
+            exam_id = "e-" + str(uuid.uuid4()) #generates unique id for each exam
+            user = User.objects.get(username=request.user.username)
+
+            exam.exam_id = exam_id
+            exam.admin = user
+
+            exam.save()
 
         return HttpResponseRedirect(reverse("admin_app:create_exam_questions", kwargs={"exam_id":exam_id}))
 
     return render(request, create_exam_details_url,{
-        "subjects" : Subject.objects.all()
+        "form" : form
     })
 
 @login_required(login_url=login_url)
 @redirect_if_user
 def create_exam_questions_view(request, exam_id):
     exam = Exam.objects.get(exam_id=exam_id)
+    
 
     if request.method == "POST":
         question = add_question(request, exam)
