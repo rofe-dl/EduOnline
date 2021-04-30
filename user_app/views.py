@@ -100,7 +100,6 @@ def give_exam_view(request, exam_id, question_id=None):
             try:
                 answer = Choice.objects.get(choice_id=request.POST["choice"])
             except KeyError:
-                messages.error(request, "Please choose an answer first")
                 return HttpResponseRedirect(reverse("user_app:give_exam", kwargs={"exam_id" : exam.exam_id}))
 
             submitted_answer = SubmittedAnswer(

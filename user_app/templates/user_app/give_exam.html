@@ -18,13 +18,24 @@
                 Mark : {{ question.mark }}
 
                 {% for choice in question.choices %}
-                    <div class="choice-div">
-                        {% if choice.choice_id == question.submitted_answer_id %}
-                            <input type="radio" name="choice" value="{{ choice.choice_id }}" checked> {{ choice }}
-                        {% else %}
-                            <input type="radio" name="choice" value="{{ choice.choice_id }}"> {{ choice }}
-                        {% endif %}
-                    </div>
+                    {% if question.is_submitted %}
+                        <div class="choice-div">
+                            {% if choice.choice_id == question.submitted_answer_id %}
+                                <input type="radio" name="choice" value="{{ choice.choice_id }}" checked disabled> {{ choice }}
+                            {% else %}
+                                <input type="radio" name="choice" value="{{ choice.choice_id }}" disabled> {{ choice }}
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="choice-div">
+                            {% if choice.choice_id == question.submitted_answer_id %}
+                                <input type="radio" name="choice" value="{{ choice.choice_id }}" checked> {{ choice }}
+                            {% else %}
+                                <input type="radio" name="choice" value="{{ choice.choice_id }}"> {{ choice }}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    
                 {% endfor %}
                 
                 {% if question.is_submitted %}

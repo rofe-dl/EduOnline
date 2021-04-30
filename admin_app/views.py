@@ -36,7 +36,7 @@ edit_profile_url = 'admin_app/edit_profile.html'
 #TODO Download jquery
 #TODO trim input when taking making question
 #TODO separate js into js file for both edit and create questions
-#TODO grey out question submit if a choice isn't selected in create,edit,give
+#TODO grey out question submit if a choice isn't selected in give exam
 #TODO give site wide messages
 #TODO add else to if request method isn't post so after operations are not performed
 #TODO clean up repeat code using include of django templates

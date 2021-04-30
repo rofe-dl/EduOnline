@@ -11,7 +11,7 @@ class SubmittedAnswer(models.Model):
     answer = models.ForeignKey(Choice, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.submitted_answer.answer
+        return self.answer.answer
 
 class ReportCard(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
