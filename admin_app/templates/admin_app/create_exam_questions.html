@@ -34,6 +34,11 @@
             }
         });
 
+        // if no option is selected
+        if (! questionForm.find("input[type=radio]:checked").val()) {
+            empty = true;
+        }
+
         if (empty) {
             questionForm.find('.submit-question-btn').prop('disabled', true);
         }else {
@@ -60,6 +65,14 @@
      * there's any empty input fields in the form
     */
     $(document).on('keyup', 'form input', function(){
+        checkEmptyFields($(this).closest('form'));
+    });
+
+    /**
+     * If any of the choices of a question are selected, it'll check if
+     * there's any empty input fields in the form
+    */
+    $(document).on('click', 'form input[type=radio]', function(){
         checkEmptyFields($(this).closest('form'));
     });
 
