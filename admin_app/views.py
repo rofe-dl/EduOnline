@@ -124,7 +124,8 @@ def create_exam_details_view(request):
             exam.admin = user
 
             exam.save()
-        messages.success(request, "Exam created")
+
+        messages.success(request, "Exam created. Create your question paper here.")
         return HttpResponseRedirect(reverse("admin_app:create_exam_questions", kwargs={"exam_id":exam_id}))
 
     return render(request, create_exam_details_url,{
@@ -139,10 +140,8 @@ def create_exam_questions_view(request, exam_id):
     if request.method == "POST":
         question = add_question(request, exam)
 
-        # if one of the fields is empty
-        if not question:
-            pass
-        else: 
+        # if question was created successfully
+        if question: 
             exam.total_marks = exam.total_marks + int(question.mark)
             exam.save()
             add_choices(request, question)
@@ -195,15 +194,14 @@ def edit_exam_questions_view(request, exam_id, question_id=None):
                 pass
             else:
                 question.statement = request.POST["statement"]
-                question.mark = request.POST["mark"]
+                question.mark = int(request.POST["mark"])
 
                 question.save()
 
-                add_choices(request, question)
-
-            # this should stay outside else as the mark is re-added back regardless
-            exam.total_marks = exam.total_marks + int(question.mark)
-
+                # if all the choices have been added successfully, add the mark back
+                if add_choices(request, question):
+                    exam.total_marks = exam.total_marks + int(question.mark)
+            
         elif "remove_question" in request.POST:
             question.delete()
 
@@ -332,10 +330,13 @@ def add_choices(request, question):
     if not solution_id:
         # if chosen solution does not match any choice (e.g user chose en empty choice as solution)
         question.delete()
+        return False
     else:
         # adds the solution to the previous question object
         question.solution_id = solution_id
         question.save()
+
+        return True
 
 def is_empty(string):
     return not str(string.strip())
