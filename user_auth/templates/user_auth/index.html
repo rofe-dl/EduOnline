@@ -1,41 +1,50 @@
 {% extends "user_auth/base_layout.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %}
     <title>EduOnline</title>
+    <link href="{% static 'user_auth/styles.css' %}" rel="stylesheet">
 {% endblock %}
         
 
 {% block body %}
-    <div class="top">
-        <h1 id="heading">EduOnline</h1>
-    </div>
-
-    <div class="mid">
-        <div id="login-box">
-            <form action="{% url 'user_auth:index' %}" method="POST">
-                {% csrf_token %}
-                <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Login</legend>
-                    {{ login_form|crispy }}
-                </fieldset>
-                <div class="form-group">
-                    <button class="btn btn-outline-info" type="submit">Log In</button>
-                </div>
-            </form>
+    <nav class="navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <h1 class="navbar-brand">EduOnline</h1>
+            </div>
         </div>
+        
+    </nav>
 
-        <div id="register-box">
-            <form action="{% url 'user_auth:register' %}" method="POST">
-                {% csrf_token %}
-                <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Register</legend>
-                    {{ register_form|crispy }}
-                </fieldset>
-                <div class="form-group">
-                    <button class="btn btn-outline-info" type="submit">Register</button>
-                </div>
-            </form>
+    <div class="container">
+        <div class="row">
+            <div id="login-box" class="col-md-6">
+                <form action="{% url 'user_auth:index' %}" method="POST">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Login</legend>
+                        {{ login_form|crispy }}
+                    </fieldset>
+                    <div class="form-group">
+                        <button class="btn btn-outline-info" type="submit">Log In</button>
+                    </div>
+                </form>
+            </div>
+    
+            <div id="register-box" class="col-md-6">
+                <form action="{% url 'user_auth:register' %}" method="POST">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Register</legend>
+                        {{ register_form|crispy }}
+                    </fieldset>
+                    <div class="form-group">
+                        <button class="btn btn-outline-info" type="submit">Register</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 {% endblock %}
