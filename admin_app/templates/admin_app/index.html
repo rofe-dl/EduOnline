@@ -6,21 +6,35 @@
         
 {% block body %}
 
-    <div class="top-div">
-        <h1 id="heading-h1">EduOnline</h1>
-        <div>
-            <ul>
-                <li><a href="{% url 'admin_app:subjects' %}">Subjects</a></li>
-                <li><a href="{% url 'admin_app:exams' %}">Exams</a></li>
-                <li><a href="{% url 'admin_app:users' %}">Users</a></li>
-                <li><a href="{% url 'admin_app:edit_profile' %}">My Profile</a></li>
-            </ul>
+    <nav class="navbar navbar-dark navbar-expand-sm">
+        <div class="container">
+            <div class="navbar-header">
+                <h1 class="navbar-brand">EduOnline</h1>
+            </div>
+            <!-- django templating language to get name of the current url from urls.py -->
+            {% with url_name=request.resolver_match.url_name %}
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item {% if url_name == 'subjects' %}active{% endif %}"><a class="nav-link" href="{% url 'admin_app:subjects' %}">Subjects</a></li>
+                    <li class="nav-item {% if url_name == 'exams' %}active{% endif %}"><a class="nav-link" href="{% url 'admin_app:exams' %}">Exams</a></li>
+                    <li class="nav-item {% if url_name == 'users' %}active{% endif %}"><a class="nav-link" href="{% url 'admin_app:users' %}">Users</a></li>
+                    <li class="nav-item {% if url_name == 'edit_profile' %}active{% endif %}"><a class="nav-link" href="{% url 'admin_app:edit_profile' %}">My Profile</a></li>
+                </ul>
+            </div>
+            {% endwith %}
+            <a href="{% url 'user_auth:logout' %}">Logout</a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
-        <a href="{% url 'user_auth:logout' %}">Logout</a>
-    </div>
+        
+    </nav>
 
-    {% block b1 %}
     
-    {% endblock %}
+    <div class="container">
+        {% block b1 %}
 
+        {% endblock %}
+    </div>
 {% endblock %}
