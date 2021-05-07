@@ -1,3 +1,52 @@
-.navbar-brand{
+body{
+    background-color: #282726;
+}
+
+.navbar{
+    background-color:maroon;
+    text-align: center;
+    color: #fff;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+#join-us-text{
+    color:#fff;
+    text-align: center;
+    margin-bottom: 5%;
     font-size: 35px;
+}
+
+.navbar-brand{
+    font-size: 50px;
+}
+
+.auth-container{
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.login-form{
+    background:#282726;
+}
+
+.register-form{
+    background: maroon;
+}
+
+.register-form, .login-form{
+    margin-bottom:12%;
+    color: #fff;
+    border-radius: 1.0rem;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
+    padding: 9%;
+}
+
+.btn{
+    font-weight: 600;
+    width: 50%;
+    color: #282726;
+    background-color: #fff;
+    border: none;
+    border-radius: 1.0rem;
+    padding:2%;
 }

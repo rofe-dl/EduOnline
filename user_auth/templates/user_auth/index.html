@@ -10,18 +10,23 @@
 
 {% block body %}
     <nav class="navbar">
-        <div class="container-fluid">
+        <div class="container">
             <div class="navbar-header">
                 <h1 class="navbar-brand">EduOnline</h1>
             </div>
+            <h5>your exams, made easier</h5>
         </div>
         
     </nav>
 
-    <div class="container">
+    <div class="container auth-container">
         <div class="row">
-            <div id="login-box" class="col-md-6">
-                <form action="{% url 'user_auth:index' %}" method="POST">
+            <div class="col-md-12" id="join-us-text">
+                <h2>Join us today!</h2>
+            </div>
+
+            <div class="col-md-6">
+                <form action="{% url 'user_auth:index' %}" method="POST" class="login-form">
                     {% csrf_token %}
                     <fieldset class="form-group">
                         <legend class="border-bottom mb-4">Login</legend>
@@ -33,8 +38,8 @@
                 </form>
             </div>
     
-            <div id="register-box" class="col-md-6">
-                <form action="{% url 'user_auth:register' %}" method="POST">
+            <div class="col-md-6">
+                <form action="{% url 'user_auth:register' %}" method="POST" class="register-form">
                     {% csrf_token %}
                     <fieldset class="form-group">
                         <legend class="border-bottom mb-4">Register</legend>
