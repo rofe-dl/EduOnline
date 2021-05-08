@@ -5,30 +5,19 @@
 {% endblock %}
 
 {% block b1 %}
-<style>
-    table, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
 
-    th, td {
-        padding: 15px;
-    }
-</style>
-<div id="users-div">
-    <h2>Users</h2>
-    <table>
+<h2>Users</h2>
+<table class="table table-striped table-dark">
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+    </tr>
+    {% for profile in profiles %}
         <tr>
-            <th>Username</th>
-            <th>Email</th>
+            <td><a href="{% url 'admin_app:report_card' profile.user.username %}">{{ profile.user.username }}</a></td>
+            <td>{{ profile.user.email }}</td>
         </tr>
-        {% for profile in profiles %}
-            <tr>
-                <td><a href="{% url 'admin_app:report_card' profile.user.username %}">{{ profile.user.username }}</a></td>
-                <td>{{ profile.user.email }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-</div>
+    {% endfor %}
+</table>
 
 {% endblock %}

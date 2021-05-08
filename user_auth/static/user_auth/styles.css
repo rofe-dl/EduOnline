@@ -12,6 +12,7 @@ a, a:visited{
     color: #fff;
 }
 
+a:focus,
 a:hover{
     text-decoration: none;
 }
@@ -46,7 +47,7 @@ a:hover{
     padding: 9%;
 }
 
-.btn{
+.auth-btn{
     font-weight: 600;
     width: 50%;
     color: #282726;
