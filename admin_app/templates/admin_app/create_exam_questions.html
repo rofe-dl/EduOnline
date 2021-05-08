@@ -5,17 +5,18 @@
 {% endblock %}
 
 {% block b1 %}
-<div id="create-exam-questions-div">
-    <h2>Create Exam</h2>
 
-    <button id="create-question-btn" type="button">Create Question</button>
+<h2>Create Exam</h2>
 
-    <div class="questions-div">
-    </div>
+<div class="questions-div">
 
-    {% include "admin_app/template_question_choice.html" %}
-    
 </div>
+
+<button class="btn btn-outline-info" id="create-question-btn" type="button">Add Question +</button>
+
+{% include "admin_app/template_question_choice.html" %}
+    
+
 
 <script>
 
@@ -104,7 +105,7 @@
 
     //didn't use just .click as above because elements are dynamically generated and may not exist when script runs
     $(document).on('click', '.add-choice-btn', function(){ 
-        $(this).closest("form").append($('#empty-choice').html());
+        $(this).closest("form").find('.choices').append($('#empty-choice').html());
         // new choice input will be empty, so submit buttong greyed out 
         $(this).closest('form').find('.submit-question-btn').prop('disabled', true);
     })

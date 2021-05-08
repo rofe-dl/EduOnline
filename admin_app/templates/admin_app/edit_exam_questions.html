@@ -8,7 +8,7 @@
 <div id="edit-exam-questions-div">
     <h2>Edit Exam</h2>
 
-    <button id="create-question-btn" type="button">Create Question</button>
+    <button id="create-question-btn" type="button">Add Question</button>
 
     <div class="questions-div">
         {% for question in questions %}
@@ -164,7 +164,7 @@
 
     //didn't use just .click as above because elements are dynamically generated and may not exist when script runs
     $(document).on('click', '.add-choice-btn', function(){ 
-        $(this).closest("form").append($('#empty-choice').html());
+        $(this).closest("form").find('.choices').append($('#empty-choice').html());
         // new choice input will be empty, so submit buttong greyed out 
         $(this).closest('form').find('.submit-question-btn').prop('disabled', true);
     })
