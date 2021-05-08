@@ -125,8 +125,8 @@ def create_exam_details_view(request):
 
             exam.save()
 
-        messages.success(request, "Exam created. Create your question paper here.")
-        return HttpResponseRedirect(reverse("admin_app:create_exam_questions", kwargs={"exam_id":exam_id}))
+            messages.success(request, "Exam created. Create your question paper here.")
+            return HttpResponseRedirect(reverse("admin_app:create_exam_questions", kwargs={"exam_id":exam_id}))
 
     return render(request, create_exam_details_url,{
         "form" : form
@@ -142,12 +142,13 @@ def create_exam_questions_view(request, exam_id):
 
         # if question was created successfully
         if question: 
-            exam.total_marks = exam.total_marks + int(question.mark)
-            exam.save()
-            add_choices(request, question)
+            if add_choices(request, question):
+                exam.total_marks = exam.total_marks + int(question.mark)
+                exam.save()
 
     return render(request, create_exam_questions_url,{
-        "exam_id" : exam_id
+        "exam_id" : exam_id,
+        "exam_name" : exam.exam_name
     })
 
 @login_required(login_url=login_url)
@@ -162,13 +163,12 @@ def edit_exam_details_view(request, exam_id):
         if form.is_valid:
             form.save()
 
-        messages.success(request, "Exam details edited")
-        # if just the details are edited
-        if "save_details" in request.POST:
-            return HttpResponseRedirect(reverse("admin_app:exams"))
-        # if details are edited and further questions will be edited
-        elif "edit_questions" in request.POST:
-            return HttpResponseRedirect(reverse("admin_app:edit_exam_questions", kwargs={"exam_id":exam_id}))
+            # if just the details are edited
+            if "save_details" in request.POST:
+                return HttpResponseRedirect(reverse("admin_app:exams"))
+            # if details are edited and further questions will be edited
+            elif "edit_questions" in request.POST:
+                return HttpResponseRedirect(reverse("admin_app:edit_exam_questions", kwargs={"exam_id":exam_id}))
 
     return render(request, edit_exam_details_url, {
         "form" : form,
@@ -191,7 +191,7 @@ def edit_exam_questions_view(request, exam_id, question_id=None):
 
             # if one of the fields are empty
             if is_empty(request.POST["statement"]) or is_empty(request.POST["mark"]):
-                pass
+                question.delete()
             else:
                 question.statement = request.POST["statement"]
                 question.mark = int(request.POST["mark"])
@@ -224,7 +224,8 @@ def edit_exam_questions_view(request, exam_id, question_id=None):
 
     return render(request, edit_exam_questions_url, {
         "questions" : questions,
-        "exam_id" : exam_id
+        "exam_id" : exam_id,
+        "exam_name" : exam.exam_name
     })
 
 @login_required(login_url=login_url)
