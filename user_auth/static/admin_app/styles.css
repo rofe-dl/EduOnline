@@ -27,6 +27,15 @@ th, td {
     color: White;
 }
 
+.search-btn-div{
+    padding-top: 32px;
+}
+
 h2{
+    margin-bottom: 4%;
+}
+
+hr{
+    background-color: #fff;
     margin-bottom: 4%;
 }

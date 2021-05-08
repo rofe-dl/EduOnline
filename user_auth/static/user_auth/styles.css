@@ -6,6 +6,7 @@ body{
 .navbar{
     background-color:maroon;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size:large;
 }
 
 a, a:visited{

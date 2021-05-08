@@ -11,3 +11,4 @@ class ExamFilter(django_filters.FilterSet):
        super(ExamFilter, self).__init__(*args, **kwargs)
        self.filters['standard'].label = "Class"
        self.filters['exam_name'].label = "Exam Name"
+       self.filters['duration'].label = "Duration (mins)"

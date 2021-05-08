@@ -12,6 +12,7 @@ class CreateExamDetailsForm(forms.ModelForm):
 
         self.fields['exam_name'].label = "Exam Name"
         self.fields['standard'].label = "Class"
+        self.fields['duration'].label = "Duration (mins)"
 
 class CreateSubjectForm(forms.ModelForm):
 

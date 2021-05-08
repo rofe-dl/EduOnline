@@ -18,11 +18,11 @@
                     <li class="nav-item {% if url_name == 'subjects' %}active{% endif %}"><a class="nav-link" href="{% url 'admin_app:subjects' %}">Subjects</a></li>
                     <li class="nav-item {% if url_name == 'exams' %}active{% endif %}"><a class="nav-link" href="{% url 'admin_app:exams' %}">Exams</a></li>
                     <li class="nav-item {% if url_name == 'users' %}active{% endif %}"><a class="nav-link" href="{% url 'admin_app:users' %}">Users</a></li>
-                    <li class="nav-item {% if url_name == 'edit_profile' %}active{% endif %}"><a class="nav-link" href="{% url 'admin_app:edit_profile' %}">My Profile</a></li>
+                    <li class="nav-item {% if url_name == 'edit_profile' %}active{% endif %}"><a class="nav-link" href="{% url 'admin_app:edit_profile' %}">{{request.user.username}}</a></li>
                 </ul>
             </div>
             {% endwith %}
-            {{request.user.username}} | <a href="{% url 'user_auth:logout' %}"> Logout</a>
+            <a href="{% url 'user_auth:logout' %}"> Logout</a>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
