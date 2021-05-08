@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block b1 %}
-<div id="edit-profile-div">
+
     <form action={% url 'admin_app:edit_profile' %} method="POST">
         {% csrf_token %}
 
@@ -19,6 +19,5 @@
         </div>
     
     </form>
-</div>
 
 {% endblock %}

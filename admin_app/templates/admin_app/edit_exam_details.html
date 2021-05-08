@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block b1 %}
-<div id="edit-exam-details-div">
 
     <form class="exam-details-form" method="POST" action="{% url 'admin_app:edit_exam_details' exam.exam_id %}">
         {% csrf_token %}
@@ -22,6 +21,5 @@
 
     </form>
 
-</div>
 
 {% endblock %}

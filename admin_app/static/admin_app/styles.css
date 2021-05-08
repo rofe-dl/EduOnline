@@ -44,3 +44,11 @@ hr{
     margin-bottom: 4%;
     margin-top: 4%;
 }
+
+#countdown{
+    color: orange;
+}
+
+.form-check{
+    margin: 20px;
+}

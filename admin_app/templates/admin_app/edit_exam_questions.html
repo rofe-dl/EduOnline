@@ -5,62 +5,62 @@
 {% endblock %}
 
 {% block b1 %}
-    <div id="edit-exam-questions-div">
-        <h2>Edit Exam : {{ exam_name }}</h2>
 
-        <div class="questions-div">
-            {% for question in questions %}
-                <form class="filled-question-form" method="POST" action="{% url 'admin_app:confirm_edit_exam_questions' exam_id question.id %}">
-                    {% csrf_token %}
-                    <div class="row">
+    <h2>Edit Exam : {{ exam_name }}</h2>
 
-                        <div class="form-group col-lg-10">
-                            <input type="text" class="form-control" name="statement" placeholder="Enter question statement here" value="{{ question.statement }}">
-                        </div>
+    <div class="questions-div">
+        {% for question in questions %}
+            <form class="filled-question-form" method="POST" action="{% url 'admin_app:confirm_edit_exam_questions' exam_id question.id %}">
+                {% csrf_token %}
+                <div class="row">
 
-                        <div class="form-group col-lg-2">
-                            <input type="number" class="form-control" name="mark" placeholder="Marks allocated" value={{ question.mark }}>
-                        </div>
-
+                    <div class="form-group col-lg-10">
+                        <input type="text" class="form-control" name="statement" placeholder="Enter question statement here" value="{{ question.statement }}">
                     </div>
 
-                    <div class="choices">
-                        {% for choice in question.choices %}
-                            <div class="choice-div">
-                                <div class="row">
-                                    <div class="form-group col-lg-1 col-md-1 col-2 radio-btn-div">
-                                        {% if choice == question.solution %}
-                                            <input type="radio" class="form-control" name="solution" checked required>
-                                        {% else %}
-                                            <input type="radio" class="form-control" name="solution" required>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <div class="form-group col-lg-9 col-md-9 col-10">
-                                        <input type="text" class="form-control" placeholder="Enter choice here" name="choice" value="{{ choice }}">
-                                    </div>
-                                    
-                                    <div class="form-group col-lg-2 col-md-2 col-12">
-                                        <button class="remove-choice-btn form-control btn btn-danger" type="button">Remove</button>
-                                    </div>
+                    <div class="form-group col-lg-2">
+                        <input type="number" class="form-control" name="mark" placeholder="Marks allocated" value={{ question.mark }}>
+                    </div>
+
+                </div>
+
+                <div class="choices">
+                    {% for choice in question.choices %}
+                        <div class="choice-div">
+                            <div class="row">
+                                <div class="form-group col-lg-1 col-md-1 col-2 radio-btn-div">
+                                    {% if choice == question.solution %}
+                                        <input type="radio" class="form-control" name="solution" checked>
+                                    {% else %}
+                                        <input type="radio" class="form-control" name="solution">
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group col-lg-9 col-md-9 col-10">
+                                    <input type="text" class="form-control" placeholder="Enter choice here" name="choice" value="{{ choice }}">
+                                </div>
+                                
+                                <div class="form-group col-lg-2 col-md-2 col-12">
+                                    <button class="remove-choice-btn form-control btn btn-danger" type="button">Remove</button>
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% endfor %}
+                </div>
 
-                    <button class="add-choice-btn btn btn-secondary" type="button">Add Choice</button>
-                    <button class="remove-question-btn btn btn-danger" type="submit">Remove Question</button>
-                    <button class="submit-question-btn btn btn-success float-md-right float-none" type="submit">Confirm Edit</button>
-                    
-                    <hr>
-                </form>
-            {% endfor %}
-        </div>
-
-        <button class="btn btn-primary" id="create-question-btn" type="button">Add Question +</button>
-
-        {% include "admin_app/template_question_choice.html" %}
-        
+                <button class="add-choice-btn btn btn-secondary" type="button">Add Choice</button>
+                <button class="remove-question-btn btn btn-danger" type="submit">Remove Question</button>
+                <button class="submit-question-btn btn btn-success float-md-right float-none" type="submit">Confirm Edit</button>
+                
+                <hr>
+            </form>
+        {% endfor %}
     </div>
+
+    <button class="btn btn-primary" id="create-question-btn" type="button">Add Question +</button>
+
+    {% include "admin_app/template_question_choice.html" %}
+        
+
 
 {% endblock %}

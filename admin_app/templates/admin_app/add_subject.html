@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block b1 %}
-<div id="add-subject-div">
+
     <form action={% url 'admin_app:add_subject' %} method="POST">
         {% csrf_token %}
 
@@ -19,6 +19,6 @@
         </div>
     
     </form>
-</div>
+
 
 {% endblock %}
