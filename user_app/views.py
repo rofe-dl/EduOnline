@@ -41,7 +41,7 @@ def redirect_if_admin(function):
 @login_required(login_url=login_url)
 @redirect_if_admin
 def index(request):
-    return render(request, index_url)
+    return HttpResponseRedirect(reverse("user_app:exams"))
 
 @login_required(login_url=login_url)
 @redirect_if_admin

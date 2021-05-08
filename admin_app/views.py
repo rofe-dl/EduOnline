@@ -33,17 +33,12 @@ users_url = 'admin_app/users.html'
 report_card_url = 'admin_app/report_card.html'
 edit_profile_url = 'admin_app/edit_profile.html'
 
-#TODO Download jquery
 #TODO trim input when taking making question
 #TODO separate js into js file for both edit and create questions
-#TODO grey out question submit if a choice isn't selected in give exam
-#TODO give site wide messages
 #TODO add else to if request method isn't post so after operations are not performed
 #TODO clean up repeat code using include of django templates
 #TODO division by 0 error if total marks 0
 #TODO show status if exam is available in table, and uploader
-#TODO make html resume exam, not give
-#TODO grey out submit if not selected
 
 def redirect_if_user(function):
     """ A decorator applied over every function so that if a student/user tried to access the url of an admin,
@@ -61,7 +56,7 @@ def redirect_if_user(function):
 @login_required(login_url=login_url)
 @redirect_if_user
 def index(request):
-    return render(request, index_url)
+    return HttpResponseRedirect(reverse("admin_app:exams"))
 
 @login_required(login_url=login_url)
 @redirect_if_user
