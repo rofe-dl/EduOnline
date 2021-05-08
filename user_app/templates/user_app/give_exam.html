@@ -8,48 +8,46 @@
 <div id="give-exam-div">
     <h2>{{exam.exam_name}}</h2>
     <h5>Time Left</h2>
-    <h5 id="countdown">{{ hours }}h : {{ mins }}m : {{ secs }}s</h4>
+    <h5 id="countdown">{{ hours }}h : {{ mins }}m : {{ secs }}s</h5>
 
-    <div class="questions-div">
-        {% for question in questions %}
-            <form class="question-form" method="POST" action="{% url 'user_app:submit_question' exam.exam_id question.id %}">
-                {% csrf_token %}
-                <h3>{{ forloop.counter }}. {{ question.statement }}</h3>
-                Mark : {{ question.mark }}
-
-                {% for choice in question.choices %}
-                    {% if question.is_submitted %}
-                        <div class="choice-div">
-                            {% if choice.choice_id == question.submitted_answer_id %}
-                                <input type="radio" name="choice" value="{{ choice.choice_id }}" checked disabled> {{ choice }}
-                            {% else %}
-                                <input type="radio" name="choice" value="{{ choice.choice_id }}" disabled> {{ choice }}
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <div class="choice-div">
-                            {% if choice.choice_id == question.submitted_answer_id %}
-                                <input type="radio" name="choice" value="{{ choice.choice_id }}" checked> {{ choice }}
-                            {% else %}
-                                <input type="radio" name="choice" value="{{ choice.choice_id }}"> {{ choice }}
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                    
-                {% endfor %}
-                
-                {% if question.is_submitted %}
-                    <button class="submit-question-btn" type="submit" disabled >Submit</button>
-                {% else %}
-                    <button class="submit-question-btn" type="submit">Submit</button>
-                {% endif %}
-            </form>
-        {% endfor %}
-        <form method="POST" action="{% url 'user_app:end_exam' exam.exam_id %}">
+    {% for question in questions %}
+        <form class="question-form" method="POST" action="{% url 'user_app:submit_question' exam.exam_id question.id %}">
             {% csrf_token %}
-            <button type="submit">End Exam</button>
+            <h3>{{ forloop.counter }}. {{ question.statement }}</h3>
+            Mark : {{ question.mark }}
+
+            {% for choice in question.choices %}
+                {% if question.is_submitted %}
+                    <div class="choice-div">
+                        {% if choice.choice_id == question.submitted_answer_id %}
+                            <input type="radio" name="choice" value="{{ choice.choice_id }}" checked disabled> {{ choice }}
+                        {% else %}
+                            <input type="radio" name="choice" value="{{ choice.choice_id }}" disabled> {{ choice }}
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="choice-div">
+                        {% if choice.choice_id == question.submitted_answer_id %}
+                            <input type="radio" name="choice" value="{{ choice.choice_id }}" checked> {{ choice }}
+                        {% else %}
+                            <input type="radio" name="choice" value="{{ choice.choice_id }}"> {{ choice }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+                
+            {% endfor %}
+            
+            {% if question.is_submitted %}
+                <button class="submit-question-btn" type="submit" disabled >Submit</button>
+            {% else %}
+                <button class="submit-question-btn" type="submit">Submit</button>
+            {% endif %}
         </form>
-    </div>
+    {% endfor %}
+    <form method="POST" action="{% url 'user_app:end_exam' exam.exam_id %}">
+        {% csrf_token %}
+        <button type="submit">End Exam</button>
+    </form>
 
 </div>
 

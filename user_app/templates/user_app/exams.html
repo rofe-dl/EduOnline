@@ -5,34 +5,53 @@
 {% endblock %}
 
 {% block b1 %}
-<div id="exams-div">
-    <form method="GET">
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Search for exams</legend>
-            {{ exams.form|crispy }}
-        </fieldset>
 
-        <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Search</button>
-        </div>
-    </form>
-
+<form method="GET">
     <h2>Exams</h2>
-    <ul>
-        {% for exam in exams.qs %}
-            <li>
-                <div class="exam-details-div">
-                    {{ exam.exam_name }}
-                    {{ exam.standard }}
-                    {{ exam.duration }}
-                    {{ exam.subject_name }}
-                    {{ exam.total_marks }}
+    <fieldset class="form-group row">
+        <div class="col-lg-4 col-sm-6">
+            {{ exams.form.exam_name|as_crispy_field }}
+        </div>
+        <div class="col-lg-2 col-sm-6">
+            {{ exams.form.duration|as_crispy_field }}
+        </div>
+        <div class="col-lg-1 col-sm-3">
+            {{ exams.form.standard|as_crispy_field }}
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            {{ exams.form.subject|as_crispy_field }}
+        </div>
+        <div class="col-lg-2 col-sm-3 search-btn-div">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
 
-                    <a href="{% url 'user_app:give_exam' exam.exam_id %}">Start Exam</a>
-                </div>
-            </li>
+    </fieldset>
+</form>
+<hr>
 
-        {% endfor %}
-    </ul>
-</div>
+<table class="table table-striped table-dark">
+    <thead class="thead-dark">
+        <tr>
+            <th>Exam Name</th>
+            <th>Class</th>
+            <th>Duration (mins)</th>
+            <th>Subject</th>
+            <th>Total Marks</th>
+        </tr>
+    </thead>
+
+    {% for exam in exams.qs %}
+        <tr>
+            <td>{{ exam.exam_name }}</td>
+            <td>{{ exam.standard }}</td>
+            <td>{{ exam.duration }}</td>
+            <td>{{ exam.subject }}</td>
+            <td>{{ exam.total_marks }}</td>
+
+            <td><a href="{% url 'user_app:give_exam' exam.exam_id %}">Start Exam</a></td>
+        </tr>
+    {% endfor %}
+
+</table>
+
 {% endblock %}
