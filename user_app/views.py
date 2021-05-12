@@ -26,6 +26,8 @@ give_exam_url = "user_app/give_exam.html"
 report_card_url = "user_app/report_card.html"
 edit_profile_url = "user_app/edit_profile.html"
 
+#TODO recalculate marks for students if exam paper edited after they're done
+
 def redirect_if_admin(function):
     """ A decorator applied over every function so that if an admin trie to access the url of a user,
     they get redirected to admin """
@@ -116,6 +118,7 @@ def give_exam_view(request, exam_id, question_id=None):
                 report_card.marks_scored = report_card.marks_scored + question.mark
                 report_card.save()
         
+        return HttpResponseRedirect(reverse("user_app:exams"))
     
     # finds list of questions belonging to the exam with this exam id
     # and find submitted answers by this user
@@ -240,7 +243,10 @@ def get_user_report_card(user):
     # Calculates the average marks of each subject
     average_marks = dict()
     for subject, mark in scored_marks.items():
-        average_marks[subject] = (mark / total_marks[subject]) * 100
+        try:
+            average_marks[subject] = round ((mark / total_marks[subject]) * 100)
+        except ZeroDivisionError:
+            average_marks[subject] = 0
 
     return report_card, average_marks
 

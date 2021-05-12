@@ -33,9 +33,6 @@ users_url = 'admin_app/users.html'
 report_card_url = 'admin_app/report_card.html'
 edit_profile_url = 'admin_app/edit_profile.html'
 
-#TODO add else to if request method isn't post so after operations are not performed
-#TODO division by 0 error if total marks 0
-
 def redirect_if_user(function):
     """ A decorator applied over every function so that if a student/user tried to access the url of an admin,
     they get redirected """
@@ -212,7 +209,7 @@ def edit_exam_questions_view(request, exam_id, question_id=None):
             question.delete()
 
         exam.save()
-
+        return HttpResponseRedirect(reverse("admin_app:exams"))
 
     # finds list of questions belonging to the exam with this exam id
     questions = []
