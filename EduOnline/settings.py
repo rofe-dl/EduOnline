@@ -24,9 +24,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('EDUONLINE_DJANGO_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'rofedl.pythonanywhere.com'
+]
 
 
 # Application definition
@@ -82,10 +84,10 @@ WSGI_APPLICATION = 'EduOnline.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'eduonline',
-        'USER' : 'root',
+        'NAME': 'rofedl$eduonline',
+        'USER' : 'rofedl',
         'PASSWORD' : os.getenv('MARIADB_PASSWORD'),
-        'HOST' : 'localhost',
+        'HOST' : 'rofedl.mysql.pythonanywhere-services.com',
         'PORT' : '3306'
     }
 }
@@ -136,6 +138,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # The template pack that is used by crispy forms 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# Deployment
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
 
 # To edit message tags as bootstrap recognizes 'danger' tag for alerts, not 'error'
 from django.contrib.messages import constants as messages
