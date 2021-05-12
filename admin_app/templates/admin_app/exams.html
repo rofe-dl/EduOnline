@@ -56,8 +56,8 @@
                 </form>
             </td>
 
-            <td><a href="{% url 'admin_app:delete_exam' exam.exam_id %}">Delete</a></td>
             <td><a href="{% url 'admin_app:edit_exam_details' exam.exam_id %}">Edit</a></td>
+            <td><a href="{% url 'admin_app:delete_exam' exam.exam_id %}">Delete</a></td>
         </tr>
     {% endfor %}
 </table>
