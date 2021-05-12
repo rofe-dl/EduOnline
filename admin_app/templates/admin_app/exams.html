@@ -38,6 +38,8 @@
             <th>Duration (mins)</th>
             <th>Subject</th>
             <th>Total Marks</th>
+            <th>Availability</th>
+            <th colspan="2">Admin Options</th>
         </tr>
     </thead>
     {% for exam in exams.qs %}
@@ -47,11 +49,16 @@
             <td>{{ exam.duration }}</td>
             <td>{{ exam.subject }}</td>
             <td>{{ exam.total_marks }}</td>
+            <td>
+                <form method="post" action="{% url 'admin_app:toggle_exam' exam.exam_id %}">
+                    {% csrf_token %}
+                    <input type="checkbox" class="exam-toggle" name="exam-toggle" {% if exam.available == True %}checked{% endif %}>
+                </form>
+            </td>
 
             <td><a href="{% url 'admin_app:delete_exam' exam.exam_id %}">Delete</a></td>
             <td><a href="{% url 'admin_app:edit_exam_details' exam.exam_id %}">Edit</a></td>
         </tr>
     {% endfor %}
 </table>
-
 {% endblock %}

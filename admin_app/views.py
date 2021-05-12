@@ -93,12 +93,27 @@ def delete_subject_view(request, subject_name):
 @login_required(login_url=login_url)
 @redirect_if_user
 def exams_view(request):
-    exams = Exam.objects.filter(available=True)
+    exams = Exam.objects.all()
     exams_filter = ExamFilter(request.GET, queryset=exams)
 
     return render(request, exams_url,{
         "exams" : exams_filter
     })
+
+@login_required(login_url=login_url)
+@redirect_if_user
+def toggle_exam_view(request, exam_id):
+    if request.method == "POST":
+        exam = Exam.objects.get(exam_id=exam_id)
+
+        if "exam-toggle" in request.POST:
+            exam.available = True
+        else:
+            exam.available = False
+
+        exam.save()
+
+        return HttpResponseRedirect(reverse('admin_app:exams'))
 
 @login_required(login_url=login_url)
 @redirect_if_user

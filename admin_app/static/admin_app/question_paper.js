@@ -135,3 +135,20 @@ $(document).on('click', '.remove-choice-btn', function(){
 $(document).on('click', '.empty-question-form .remove-question-btn', function(){
     $(this).closest("form").remove();
 })
+
+$(document).on('submit', '.give-exam-form', function(event){
+    event.preventDefault();
+    let questionForm = $(this);
+
+    let posting = $.post(questionForm.attr('action'), questionForm.serialize());
+    posting.done(function(){
+        questionForm.find(".submit-question-btn").prop('disabled', true);
+    })
+})
+
+$(document).on('change', '.exam-toggle', function(event){
+    event.preventDefault();
+    checkboxForm = $(this).closest('form');
+
+    $.post(checkboxForm.attr('action'), checkboxForm.serialize());
+})

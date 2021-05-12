@@ -51,15 +51,6 @@
 
 
 <script>
-    $(document).on('submit', '.give-exam-form', function(event){
-        event.preventDefault();
-        let questionForm = $(this);
-
-        let posting = $.post(questionForm.attr('action'), questionForm.serialize());
-        posting.done(function(){
-            questionForm.find(".submit-question-btn").prop('disabled', true);
-        })
-    })
 
     var run = setInterval(function(){
         // finds the duration of the exam and converts to seconds, reducing by 1
