@@ -34,7 +34,6 @@ report_card_url = 'admin_app/report_card.html'
 edit_profile_url = 'admin_app/edit_profile.html'
 
 #TODO trim input when taking making question
-#TODO separate js into js file for both edit and create questions
 #TODO add else to if request method isn't post so after operations are not performed
 #TODO clean up repeat code using include of django templates
 #TODO division by 0 error if total marks 0
