@@ -11,7 +11,7 @@
     <h4 id="countdown">{{ hours }}h : {{ mins }}m : {{ secs }}s</h4>
 
     {% for question in questions %}
-        <form class="give-exam-form" method="POST" action="{% url 'user_app:submit_question' exam.exam_id question.id %}">
+        <form class="give-exam-form p-5" method="POST" action="{% url 'user_app:submit_question' exam.exam_id question.id %}">
             {% csrf_token %}
             <div class="row">
                 <h4 class="col-10">{{ forloop.counter }}. {{ question.statement }}</h4>
@@ -38,11 +38,10 @@
             </div>
             {% endfor %}
 
-
             <button class="submit-question-btn btn btn-primary" type="submit"{% if question.is_submitted %}disabled{% endif %}>Submit</button>
-
-            <hr>
+            
         </form>
+        <hr>
     {% endfor %}
     
     <form method="POST" action="{% url 'user_app:end_exam' exam.exam_id %}">

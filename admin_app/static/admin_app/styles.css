@@ -47,8 +47,15 @@ hr{
 
 #countdown{
     color: orange;
+    margin-bottom: 5%;
 }
 
 .form-check{
     margin: 20px;
+}
+
+.give-exam-form{
+    /* background-color:black; */
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
 }
