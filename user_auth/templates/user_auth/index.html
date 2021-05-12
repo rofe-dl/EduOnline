@@ -27,7 +27,7 @@
                 <form action="{% url 'user_auth:index' %}" method="POST" class="login-form">
                     {% csrf_token %}
                     <fieldset class="form-group">
-                        <legend class="border-bottom mb-4">Login</legend>
+                        <legend class="mb-4">Login</legend>
                         {{ login_form|crispy }}
                     </fieldset>
                     <div class="form-group">
@@ -40,7 +40,7 @@
                 <form action="{% url 'user_auth:register' %}" method="POST" class="register-form">
                     {% csrf_token %}
                     <fieldset class="form-group">
-                        <legend class="border-bottom mb-4">Register</legend>
+                        <legend class="mb-4">Register</legend>
                         {{ register_form|crispy }}
                     </fieldset>
                     <div class="form-group">
