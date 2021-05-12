@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
+import secrets
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('EDUONLINE_DJANGO_KEY')
+SECRET_KEY = secrets.DJANGO_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -86,7 +88,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'rofedl$eduonline',
         'USER' : 'rofedl',
-        'PASSWORD' : os.getenv('MARIADB_PASSWORD'),
+        'PASSWORD' : secrets.DATABASE_PASSWORD,
         'HOST' : 'rofedl.mysql.pythonanywhere-services.com',
         'PORT' : '3306'
     }
