@@ -145,6 +145,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True
+STATIC_ROOT = "/home/rofedl/EduOnline/static"
 
 # To edit message tags as bootstrap recognizes 'danger' tag for alerts, not 'error'
 from django.contrib.messages import constants as messages
