@@ -60,3 +60,65 @@ a:hover{
     border-radius: 1.0rem;
     padding:2%;
 }
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin-top: 4%;
+}
+
+th, td {
+    padding: 15px;
+}
+
+.mid{
+    margin-top: 2%;
+    padding: 2%;
+}
+
+.link-button {
+    background-color:#0e5ca5;
+    border-radius: 5px;
+    color: white;
+    padding: .5em;
+    text-decoration: none;
+}
+
+.link-button:focus,
+.link-button:hover {
+    background-color: #0b447a;
+    color: White;
+}
+
+.search-btn-div{
+    padding-top: 32px;
+}
+
+.radio-btn-div{
+    margin-top: 1%;
+}
+
+h2{
+    margin-bottom: 4%;
+}
+
+hr{
+    background-color: #fff;
+    margin-bottom: 4%;
+    margin-top: 4%;
+}
+
+#countdown{
+    color: orange;
+    margin-bottom: 5%;
+}
+
+.form-check{
+    margin: 20px;
+}
+
+.give-exam-form{
+    /* background-color:black; */
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+}
