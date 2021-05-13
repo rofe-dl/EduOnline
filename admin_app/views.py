@@ -9,7 +9,6 @@ from django.contrib import messages
 from .models import *
 from .forms import CreateExamDetailsForm, CreateSubjectForm
 
-# from user_auth.models import Profile
 from user_auth.forms import UserRegisterForm
 
 from user_app.views import get_user_report_card
