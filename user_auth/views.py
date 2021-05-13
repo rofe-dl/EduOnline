@@ -26,7 +26,7 @@ def index(request):
 
             login(request, user)
 
-            if(user.profile.is_admin):
+            if(user.is_staff):
                 return HttpResponseRedirect(reverse('admin_app:index'))
             else:
                 return HttpResponseRedirect(reverse('user_app:index'))
@@ -44,9 +44,7 @@ def register_view(request):
 
         if register_form.is_valid():
             user = register_form.save()
-            profile = Profile(is_admin=False, user=user)
-            profile.save()
-
+            
             login(request, user)
 
             return HttpResponseRedirect(reverse('user_app:index'))

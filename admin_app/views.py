@@ -9,7 +9,7 @@ from django.contrib import messages
 from .models import *
 from .forms import CreateExamDetailsForm, CreateSubjectForm
 
-from user_auth.models import Profile
+# from user_auth.models import Profile
 from user_auth.forms import UserRegisterForm
 
 from user_app.views import get_user_report_card
@@ -38,7 +38,7 @@ def redirect_if_user(function):
     they get redirected """
 
     def _function(request, *args, **kwargs):
-        if not request.user.profile.is_admin:
+        if not request.user.is_staff:
             return HttpResponseRedirect(reverse("user_app:index"))
         
         return function(request, *args, **kwargs)
@@ -256,7 +256,7 @@ def report_card_view(request, username):
 @redirect_if_user
 def users_view(request):
     return render(request, users_url, {
-        "profiles" : Profile.objects.filter(is_admin=False)
+        "users" : User.objects.filter(is_staff=False)
     })
 
 @login_required(login_url='/')

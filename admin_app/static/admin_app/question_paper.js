@@ -43,7 +43,7 @@
  * If any field on question form is edited, it'll check if
  * there's any empty input fields in the form
 */
-$(document).on('keyup', 'form input[type=text]', function(){
+$(document).on('keyup', 'form input[type=text], form input[type=number]', function(){
     checkEmptyFields($(this).closest('form'));
 });
 

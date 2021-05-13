@@ -33,7 +33,7 @@ def redirect_if_admin(function):
     they get redirected to admin """
 
     def _function(request, *args, **kwargs):
-        if request.user.profile.is_admin:
+        if request.user.is_staff:
             return HttpResponseRedirect(reverse("admin_app:index"))
         
         return function(request, *args, **kwargs)
