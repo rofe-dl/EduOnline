@@ -22,6 +22,9 @@ urlpatterns = [
     path('edit-exam/<str:exam_id>/questions', views.edit_exam_questions_view, name="edit_exam_questions"),
     
     path('edit-exam/<str:exam_id>/questions/<str:question_id>', views.edit_exam_questions_view, name="confirm_edit_exam_questions"),
+
     path('users', views.users_view, name="users"),
+    path('remove-user/<str:username>', views.remove_user_view, name="remove_user"),
+
     path('report-card/<str:username>', views.report_card_view, name="report_card")
 ]

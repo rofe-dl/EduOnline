@@ -11,11 +11,13 @@
     <tr>
         <th>Username</th>
         <th>Email</th>
+        <th>Admin Options</th>
     </tr>
     {% for user in users %}
         <tr>
             <td><a href="{% url 'admin_app:report_card' user.username %}">{{ user.username }}</a></td>
             <td>{{ user.email }}</td>
+            <td><a href="{% url 'admin_app:remove_user' user.username %}">Remove</a></td>
         </tr>
     {% endfor %}
 </table>

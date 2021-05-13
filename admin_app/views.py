@@ -258,6 +258,21 @@ def users_view(request):
         "users" : User.objects.filter(is_staff=False)
     })
 
+@login_required(login_url=login_url)
+@redirect_if_user
+def remove_user_view(request, username):
+
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return HttpResponseRedirect(reverse("admin_app:users"))
+
+    if not user.is_staff:
+        user.delete()
+
+    return HttpResponseRedirect(reverse("admin_app:users"))
+
+
 @login_required(login_url='/')
 def edit_profile_view(request):
     register_form = UserRegisterForm(instance=request.user)
