@@ -133,7 +133,7 @@ def toggle_exam_view(request, exam_id):
 
         exam.save()
 
-        return HttpResponseRedirect(reverse('admin_app:exams'))
+    return HttpResponseRedirect(reverse('admin_app:exams'))
 
 """
 Creating exams is a two step process:
@@ -289,12 +289,13 @@ def delete_exam_view(request, exam_id):
         exam_id (str): Exam ID of the exam to delete
     
     """
-    if request.method == "POST":
-        query = Exam.objects.filter(exam_id=exam_id)
-        query.delete()
 
-        messages.success(request, "Exam deleted")
-        return HttpResponseRedirect(reverse("admin_app:exams"))
+    query = Exam.objects.filter(exam_id=exam_id)
+    query.delete()
+
+    messages.success(request, "Exam deleted")
+
+    return HttpResponseRedirect(reverse("admin_app:exams"))
 
 @login_required(login_url=login_url)
 @redirect_if_user
@@ -357,10 +358,13 @@ def add_question(request, exam):
     """
     Adds a question to an exam
     Creates question object with solution_id not set because it's not known
-    Returns false if not successfully added
 
     Args:
         exam (Exam): Exam object to add the question to
+
+    Returns:
+        question : Question object that is just created or false if not created
+
     """
     # generates unique id for exam
     question_id = "q-" + str(uuid.uuid4())
@@ -383,10 +387,13 @@ def add_question(request, exam):
 def add_choices(request, question):
     """
     Adds the choices to the question
-    Returns false if not successfully added
 
     Args:
         question (Question): Question object to add the choices to
+
+    Returns:
+        boolean : True if successfully added all choices with solution, false otherwise
+
     """
     
     # handles if user doesn't select any choice as a solution
