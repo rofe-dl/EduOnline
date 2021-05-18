@@ -188,20 +188,22 @@ def report_card_view(request):
 
 @login_required(login_url='/')
 def edit_profile_view(request):
-    register_form = UserRegisterForm(instance=request.user)
+    profile_update_form = UserRegisterForm(instance=request.user)
     
-    if request.method == "POST":
-        register_form = UserRegisterForm(request.POST, instance=request.user)
+    if request.method == 'POST':
 
-        if register_form.is_valid():
-            user = register_form.save()
+        profile_update_form = UserRegisterForm(data=request.POST, instance=request.user)
+
+        if profile_update_form.is_valid():
+
+            user = profile_update_form.save() 
             update_session_auth_hash(request, user) # prevents logout by updating session
-            messages.success(request, "Profile updated")
-            return HttpResponseRedirect(reverse("user_app:index"))
-        
-        
-    return render(request, edit_profile_url, {
-        "register_form" : register_form
+            messages.success(request, 'Profile Updated')
+
+            return HttpResponseRedirect(reverse('user_app:index'))
+
+    return render(request, edit_profile_url,{
+        'profile_update_form': profile_update_form
     })
 
 """ HELPER METHODS """

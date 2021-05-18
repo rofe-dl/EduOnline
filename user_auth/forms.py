@@ -1,14 +1,16 @@
-from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True)
 
+    #to define the details of the form(equivalent models, fields)
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
-    
+
+        #for which model this form exists
+        model=User
+        fields=['username','email','password1','password2']
+
+    #to remove the help text
     def __init__(self, *args, **kwargs):
         super(UserRegisterForm, self).__init__(*args, **kwargs)
 
