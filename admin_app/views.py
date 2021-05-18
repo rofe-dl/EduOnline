@@ -53,6 +53,10 @@ def index(request):
 @login_required(login_url=login_url)
 @redirect_if_user
 def subjects_view(request):
+    """ 
+    Shows all the subjects available in the database.
+    
+    """
     return render(request, subjects_url,{
         "subjects" : Subject.objects.all()
     })
@@ -60,6 +64,11 @@ def subjects_view(request):
 @login_required(login_url=login_url)
 @redirect_if_user
 def add_subject_view(request):
+    """
+    Adds a new subject to the database with the create subject form.
+    Then redirects to the list of subjects.
+
+    """
     form = CreateSubjectForm()
     if request.method == "POST":
         form = CreateSubjectForm(request.POST)
@@ -77,6 +86,13 @@ def add_subject_view(request):
 @login_required(login_url=login_url)
 @redirect_if_user
 def delete_subject_view(request, subject_name):
+    """
+    Deletes a subject and redirects to the list of subjects.
+
+    Args:
+        subject_name (str): The subject name of the subject to delete
+
+    """
     query = Subject.objects.filter(subject_name=subject_name)
     query.delete()
 
@@ -86,6 +102,7 @@ def delete_subject_view(request, subject_name):
 @login_required(login_url=login_url)
 @redirect_if_user
 def exams_view(request):
+
     exams = Exam.objects.all()
     exams_filter = ExamFilter(request.GET, queryset=exams)
 
@@ -96,9 +113,19 @@ def exams_view(request):
 @login_required(login_url=login_url)
 @redirect_if_user
 def toggle_exam_view(request, exam_id):
+    """
+    Method to call when admin makes an exam available or unavailable with the checkbox
+    Checkbox sends a POST request with jQuery that is received by this method.
+    Redirects to the list of exams
+
+    Args:
+        exam_id (str): Exam ID of the exam to toggle
+
+    """
     if request.method == "POST":
         exam = Exam.objects.get(exam_id=exam_id)
 
+        # if the check box is ticked, exam-toggle will be in post request, meaning make exam available
         if "exam-toggle" in request.POST:
             exam.available = True
         else:
@@ -108,9 +135,19 @@ def toggle_exam_view(request, exam_id):
 
         return HttpResponseRedirect(reverse('admin_app:exams'))
 
+"""
+Creating exams is a two step process:
+    1. Create the details of the exam, like name, duration, class etc.
+    2. Creating the question paper of the exam
+"""
+
 @login_required(login_url=login_url)
 @redirect_if_user
 def create_exam_details_view(request):
+    """
+    Displays the form to create a new exam and redirects to the question paper making page
+
+    """
     form = CreateExamDetailsForm()
 
     if request.method == "POST":
@@ -137,13 +174,25 @@ def create_exam_details_view(request):
 @login_required(login_url=login_url)
 @redirect_if_user
 def create_exam_questions_view(request, exam_id):
+    """
+    Displays the question paper making page.
+    If method is post, exam question is first created without its choices with add_question method
+    If that's successful, the choices are added with the add_choices method
+
+    Args:
+        exam_id (str): Exam ID of the newly created exam to create questions for
+
+    """
     exam = Exam.objects.get(exam_id=exam_id)
     
+    # if admin submits a new question
     if request.method == "POST":
+        # adds the question without its choices, returns true if succesfully added
         question = add_question(request, exam)
 
         # if question was created successfully
         if question: 
+            # then adds the choices to the question, returns true if successfully added
             if add_choices(request, question):
                 exam.total_marks = exam.total_marks + int(question.mark)
                 exam.save()
@@ -233,11 +282,19 @@ def edit_exam_questions_view(request, exam_id, question_id=None):
 @login_required(login_url=login_url)
 @redirect_if_user
 def delete_exam_view(request, exam_id):
-    query = Exam.objects.filter(exam_id=exam_id)
-    query.delete()
+    """
+    Deletes an exam from the database and redirects to list of exams
 
-    messages.success(request, "Exam deleted")
-    return HttpResponseRedirect(reverse("admin_app:exams"))
+    Args:
+        exam_id (str): Exam ID of the exam to delete
+    
+    """
+    if request.method == "POST":
+        query = Exam.objects.filter(exam_id=exam_id)
+        query.delete()
+
+        messages.success(request, "Exam deleted")
+        return HttpResponseRedirect(reverse("admin_app:exams"))
 
 @login_required(login_url=login_url)
 @redirect_if_user
@@ -297,10 +354,18 @@ def edit_profile_view(request):
 """ HELPER METHODS """
 
 def add_question(request, exam):
-    # creates question object with solution_id not set because it's not known
+    """
+    Adds a question to an exam
+    Creates question object with solution_id not set because it's not known
+    Returns false if not successfully added
+
+    Args:
+        exam (Exam): Exam object to add the question to
+    """
+    # generates unique id for exam
     question_id = "q-" + str(uuid.uuid4())
 
-    # if question statement or mark is empty
+    # if question statement or mark is empty, return false
     if is_empty(request.POST["statement"]) or is_empty(request.POST["mark"]):
         return False
 
@@ -316,6 +381,13 @@ def add_question(request, exam):
     return question
 
 def add_choices(request, question):
+    """
+    Adds the choices to the question
+    Returns false if not successfully added
+
+    Args:
+        question (Question): Question object to add the choices to
+    """
     
     # handles if user doesn't select any choice as a solution
     try:
@@ -324,7 +396,7 @@ def add_choices(request, question):
         question.delete()
         return False
 
-    # creates choice objects and set the solution id when choice id match solution id
+    # creates choice objects and set the solution id when a choice matches solution
     choices = request.POST.getlist('choice')
     solution_id = ""
 
@@ -359,4 +431,7 @@ def add_choices(request, question):
         return True
 
 def is_empty(string):
+    """
+    Checks if a string is empty 
+    """
     return not str(string.strip())
