@@ -85,7 +85,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'eduonline',
-        'USER' : 'root',
+        'USER' : 'admin',
         'PASSWORD' : secrets.DATABASE_PASSWORD,
         'HOST' : 'localhost',
         'PORT' : '3306'
